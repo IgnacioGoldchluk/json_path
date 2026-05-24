@@ -1,0 +1,209 @@
+defmodule JSONPathTest do
+  use ExUnit.Case
+
+  doctest JSONPath
+
+  describe "filter comparison" do
+    test "negative literal filter is invalid" do
+      error = %JSONPath.Error{
+        expression: "!(1)",
+        message: "value in filter must be used in comparison expression",
+        type: :invalid_expression
+      }
+
+      assert {:error, error} == JSONPath.evaluate(%{}, "$[?!1]")
+    end
+
+    test "ordinal comparisons are invalid for multiple value queries" do
+      error = %JSONPath.Error{
+        expression: "@[?($)] > 1",
+        message: "comparison operator requires single value queries",
+        type: :invalid_expression
+      }
+
+      assert {:error, error} == JSONPath.evaluate(%{}, "$[?@[?$] > 1]")
+    end
+  end
+
+  describe "count function" do
+    test "literal as argument returns error" do
+      error = %JSONPath.Error{
+        expression: "1",
+        message: "count function requires query or selector as argument",
+        type: :unexpected_argument
+      }
+
+      assert {:error, error} == JSONPath.evaluate(%{}, "$[?count(1) > 1]")
+
+      error = %JSONPath.Error{
+        expression: "true",
+        message: "count function requires query or selector as argument",
+        type: :unexpected_argument
+      }
+
+      assert {:error, error} ==
+               JSONPath.evaluate(%{}, "$[?count(true) > 2]")
+    end
+
+    test "count with empty slice is 0" do
+      query = "$[?count(@[::0]) > 0]"
+      root = [[1, 2], [3], []]
+      assert {:ok, []} == JSONPath.evaluate(root, query)
+    end
+  end
+
+  describe "length function" do
+    test "length takes single query argument" do
+      error = %JSONPath.Error{
+        expression: "@[1, 2]",
+        message: "length function takes single-query argument",
+        type: :unexpected_argument
+      }
+
+      assert {:error, error} == JSONPath.evaluate(%{}, "$[?length(@[1, 2])<3]")
+    end
+  end
+
+  describe "function comparison" do
+    test "length requires comparison" do
+      error = %JSONPath.Error{
+        expression: "length(@)",
+        message: "comparison operator expected",
+        type: :invalid_expression
+      }
+
+      assert {:error, error} == JSONPath.evaluate(%{}, "$[?length(@)]")
+    end
+
+    test "count requires comparison" do
+      error = %JSONPath.Error{
+        expression: "count(@) && @['x'] > 2",
+        message: "comparison operator expected",
+        type: :invalid_expression
+      }
+
+      assert {:error, error} == JSONPath.evaluate(%{}, "$[?count(@) && @.x > 2]")
+    end
+
+    test "count accepts descendant segment" do
+      query = "$[?count(@..*)>2]"
+
+      assert {:ok, [[1, 2, 3, 4]]} =
+               JSONPath.evaluate(%{"a" => [1, 2, 3, 4], "b" => 2, "c" => 3}, query)
+    end
+  end
+
+  describe "invalid function signatures" do
+    test "length takes 1 argument" do
+      error = %JSONPath.Error{
+        expression: "length(@, @['a'])",
+        message: "got 2 arguments but function length expects 1 arguments",
+        type: :invalid_expression
+      }
+
+      assert {:error, error} == JSONPath.evaluate(%{}, "$[?length(@, @.a)]")
+    end
+
+    test "count takes 1 argument" do
+      error = %JSONPath.Error{
+        expression: "count(@, @['a'])",
+        message: "got 2 arguments but function count expects 1 arguments",
+        type: :invalid_expression
+      }
+
+      assert {:error, error} == JSONPath.evaluate(%{}, "$[?count(@, @.a)]")
+    end
+
+    test "value takes 1 argument" do
+      error = %JSONPath.Error{
+        expression: "value(@, @['a'])",
+        message: "got 2 arguments but function value expects 1 arguments",
+        type: :invalid_expression
+      }
+
+      assert {:error, error} ==
+               JSONPath.evaluate(%{}, "$[?value(@, @.a)]")
+    end
+
+    test "match and search take 2 arguments" do
+      error = %JSONPath.Error{
+        expression: "match(@)",
+        message: "got 1 arguments but function match expects 2 arguments",
+        type: :invalid_expression
+      }
+
+      assert {:error, error} == JSONPath.evaluate(%{}, "$[?match(@)]")
+
+      error = %JSONPath.Error{
+        expression: "search(@)",
+        message: "got 1 arguments but function search expects 2 arguments",
+        type: :invalid_expression
+      }
+
+      assert {:error, error} == JSONPath.evaluate(%{}, "$[?search(@)]")
+    end
+  end
+
+  describe "match function" do
+    test "matches only at start of the string" do
+      query = "$.values[?match(@, $.regex)]"
+
+      root = %{
+        "regex" => "b.?b",
+        "values" => ["abc", "bcd", "bab", "bba", "bbab", "b", true, [], %{}]
+      }
+
+      assert {:ok, ["bab"]} == JSONPath.evaluate(root, query)
+    end
+
+    test "matches escaped characters" do
+      query = "$[?match(@, 'a\\\\[b')]"
+      root = ["abc", "a[b"]
+      assert {:ok, ["a[b"]} == JSONPath.evaluate(root, query)
+    end
+
+    test "dot matches unicode characters from official test suite" do
+      # Doing it here because the JSON file doesn't format properly and instead
+      # renders the empty string
+      root = [to_string([2028]), to_string([2029])]
+      query = "$[?match(@, '.')]"
+
+      assert {:ok, root} == JSONPath.evaluate(root, query)
+    end
+  end
+
+  describe "search function" do
+    test "accepts runtime expressions as regex" do
+      query = "$[?search(@, 'a.b')]"
+      root = ["a𐄁bc", "abc", "1", true, [], %{}]
+      assert {:ok, ["a𐄁bc"]} == JSONPath.evaluate(root, query)
+    end
+  end
+
+  describe "slices" do
+    test "array with negative default step and defaults limits" do
+      assert {:ok, [3, 2, 1, 0]} == JSONPath.evaluate([0, 1, 2, 3], "$[::-1]")
+    end
+
+    test "array with negative step an default limits" do
+      assert {:ok, [3, 1]} == JSONPath.evaluate([0, 1, 2, 3], "$[::-2]")
+    end
+
+    test "negative slice with specified stop" do
+      assert {:ok, [3, 2, 1]} == JSONPath.evaluate([0, 1, 2, 3], "$[:0:-1]")
+    end
+
+    test "negative slice step with default end" do
+      assert {:ok, [2, 1, 0]} == JSONPath.evaluate([0, 1, 2, 3], "$[2::-1]")
+    end
+  end
+
+  describe "evaluate/2" do
+    test "reuses parsed AST" do
+      {:ok, query} = JSONPath.build("$..a")
+
+      assert {:ok, [1, "b"]} == JSONPath.evaluate(%{"a" => 1, "c" => %{"a" => "b"}}, query)
+      assert {:ok, ["d"]} == JSONPath.evaluate([%{"a" => "d"}], query)
+    end
+  end
+end

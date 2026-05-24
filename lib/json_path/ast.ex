@@ -6,8 +6,6 @@ defmodule JSONPath.AST do
   @opaque t() :: tuple()
 
   @comparison_operators [:lt, :lte, :eq, :gte, :gt, :neq]
-  @filter_operators [:and, :or] ++ @comparison_operators
-
   def parse(tokens) do
     {ast, []} = parse_path(tokens)
     validate(ast)
@@ -304,14 +302,17 @@ defmodule JSONPath.AST do
      }}
   end
 
-  defp comparison_filters({op, {:literal, _}, {:literal, _}} = node)
-       when op in @filter_operators do
-    {:error,
-     %JSONPath.Error{
-       type: :invalid_expression,
-       expression: ast_to_string(node),
-       message: "value in filter must be used in comparison expression"
-     }}
+  defp comparison_filters({op, expr1, expr2} = node) when op in [:and, :or] do
+    if match?({:literal, _}, expr1) or match?({:literal, _}, expr2) do
+      {:error,
+       %JSONPath.Error{
+         type: :invalid_expression,
+         expression: ast_to_string(node),
+         message: "value in filter must be used in comparison expression"
+       }}
+    else
+      :ok
+    end
   end
 
   defp comparison_filters(_), do: :ok

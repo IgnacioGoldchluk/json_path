@@ -14,6 +14,11 @@ defmodule JSONPathTest do
       assert {:error, error} == JSONPath.evaluate(%{}, "$[?!1]")
     end
 
+    test "literal comparison is valid" do
+      query = "$[?1 == 1]"
+      assert {:ok, [1, 2, 3]} == JSONPath.evaluate([1, 2, 3], query)
+    end
+
     test "ordinal comparisons are invalid for multiple value queries" do
       error = %JSONPath.Error{
         expression: "@[?($)] > 1",

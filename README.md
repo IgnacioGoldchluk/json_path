@@ -1,6 +1,6 @@
 [![CI](https://github.com/IgnacioGoldchluk/json_path/actions/workflows/ci.yml/badge.svg)](https://github.com/IgnacioGoldchluk/json_path/actions/workflows/ci.yml)
 [![License](https://img.shields.io/hexpm/l/json_path
-)](https://github.com/IgnacioGoldchluk/json_path/blob/main/LICENSE.md)
+)](https://github.com/IgnacioGoldchluk/json_path/blob/main/LICENSE)
 [![Version](https://img.shields.io/hexpm/v/json_path.svg)](https://hex.pm/packages/json_path)
 [![Docs](https://img.shields.io/badge/documentation-gray.svg)](https://hexdocs.pm/json_path)
 

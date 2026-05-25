@@ -14,7 +14,7 @@ Add `json_path` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:json_path, "~> 0.1.0"}
+    {:json_path, "~> 0.1.1"}
   ]
 end
 ```
@@ -39,6 +39,7 @@ JSONPath.evaluate(["a", "b", "c"], query)
 # {:ok, ["b"]}
 ```
 
-## Notes
+## Notes and considerations
 - JSONPath always returns a list of nodes, as specified by RFC-9535, even for expressions that could return at most one element such as `$.x`.
 - Atom keys are not supported.
+- JSON Path expects [I-RegExp](https://www.rfc-editor.org/info/rfc9485/) style regular expressions, which are a limited version of regular expressions made to be compatible and easy to implement in most languages. This library instead allows for any Elixir-valid regular expression.

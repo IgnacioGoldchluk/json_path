@@ -123,7 +123,7 @@ defmodule JSONPath.Eval do
     with [string] when is_binary(string) <- evaluate(root, current_node, expr1),
          [regex] when is_binary(regex) <- evaluate(root, current_node, expr2),
          {:ok, pattern} <- Regex.compile(regex, "u") do
-      (Regex.scan(pattern, string) == [[string]]) |> to_node_boolean()
+      match?([[^string | _]], Regex.scan(pattern, string)) |> to_node_boolean()
     else
       _ -> @node_false
     end

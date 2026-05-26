@@ -150,6 +150,14 @@ defmodule JSONPathTest do
   end
 
   describe "match function" do
+    test "supports non I-RegExp expressions with groups" do
+      # Not supported by RFC-9535, we honor Elixir regex for now
+      query = "$[?match(@, '(a)b+')]"
+      root = ["aab", "abb", "ab", "a"]
+
+      assert {:ok, ["abb", "ab"]} == JSONPath.evaluate(root, query)
+    end
+
     test "matches only at start of the string" do
       query = "$.values[?match(@, $.regex)]"
 

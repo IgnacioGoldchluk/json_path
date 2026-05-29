@@ -23,6 +23,17 @@ defmodule JSONPath do
   end
 
   @doc """
+  Same as `build/1` but raises in case of error
+  """
+  @spec build!(String.t()) :: JSONPath.AST.t()
+  def build!(query) when is_binary(query) do
+    case build(query) do
+      {:ok, ast} -> ast
+      {:error, %JSONPath.Error{} = e} -> raise e
+    end
+  end
+
+  @doc """
   Evaluates a JSON value against the given query string or parsed AST. Returns an
   `{:ok, results}` or `{:error, JSONPath.Error.t()}` tuple
 
@@ -52,4 +63,15 @@ defmodule JSONPath do
   end
 
   def evaluate(document, query), do: {:ok, Eval.evaluate(document, query)}
+
+  @doc """
+  Same as `evaluate/2` but raises in case of error
+  """
+  @spec evaluate!(json(), String.t() | AST.t()) :: list(json())
+  def evaluate!(document, query) do
+    case evaluate(document, query) do
+      {:ok, result} -> result
+      {:error, %JSONPath.Error{} = e} -> raise e
+    end
+  end
 end

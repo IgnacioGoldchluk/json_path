@@ -14,7 +14,7 @@ Add `json_path` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:json_path, "~> 0.1"}
+    {:json_path, "~> 0.2"}
   ]
 end
 ```
@@ -24,19 +24,39 @@ end
 
 You can pass the JSONPath query expression as a string
 ```elixir
-root = [%{"a" => %{"b" => "c"}}, %{"b" => %{"a" => 1}}]
-query = "$..a"
-JSONPath.evaluate(root, query)
-# {:ok, [%{"b" => "c"}, 1]}
+iex(1)> root = [%{"a" => %{"b" => "c"}}, %{"b" => %{"a" => 1}}]
+iex(2)> query = "$..a"
+iex(3)> JSONPath.evaluate(root, query)
+{:ok, [%{"b" => "c"}, 1]}
 ```
 
 Or if you plan use the same query multiple times, you can build the expression once for better performance
 ```elixir
-{:ok, query} = JSONPath.build("$[1]")
-JSONPath.evaluate([], query)
-#{:ok, []}
-JSONPath.evaluate(["a", "b", "c"], query)
-# {:ok, ["b"]}
+iex(1)> {:ok, query} = JSONPath.build("$[1]")
+iex(2)> JSONPath.evaluate([], query)
+{:ok, []}
+
+iex(3)> JSONPath.evaluate(["a", "b", "c"], query)
+{:ok, ["b"]}
+```
+
+Attempting to build invalid JSONPath expressions returns helpful error messages
+```elixir
+iex(1)> JSONPath.build("$[?length(@.elems)]")
+{:error,
+ %JSONPath.Error{
+   type: :invalid_expression,
+   expression: "length(@['elems'])",
+   message: "comparison operator expected"
+ }}
+
+iex(2)> JSONPath.evaluate([%{"name" => "Alice"}], "$[?match(@.name)]")
+{:error,
+ %JSONPath.Error{
+   type: :invalid_expression,
+   expression: "match(@['name'])",
+   message: "got 1 argument but 'match' expects 2 arguments"
+ }}
 ```
 
 ## Notes and considerations

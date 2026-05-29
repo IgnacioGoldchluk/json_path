@@ -111,8 +111,8 @@ defmodule JSONPath.Eval do
 
   defp do_eval(root, current_node, {:function, :search, [expr1, expr2]}) do
     with [string] when is_binary(string) <- evaluate(root, current_node, expr1),
-         [regex] when is_binary(regex) <- evaluate(root, current_node, expr2),
-         {:ok, pattern} <- Regex.compile(regex, "u") do
+         [regex] <- evaluate(root, current_node, expr2),
+         {:ok, pattern} <- compile_pattern(regex) do
       Regex.match?(pattern, string) |> to_node_boolean()
     else
       _ -> @node_false
@@ -121,9 +121,10 @@ defmodule JSONPath.Eval do
 
   defp do_eval(root, current_node, {:function, :match, [expr1, expr2]}) do
     with [string] when is_binary(string) <- evaluate(root, current_node, expr1),
-         [regex] when is_binary(regex) <- evaluate(root, current_node, expr2),
-         {:ok, pattern} <- Regex.compile(regex, "u") do
-      match?([[^string | _]], Regex.scan(pattern, string)) |> to_node_boolean()
+         [regex] <- evaluate(root, current_node, expr2),
+         {:ok, pattern} <- compile_pattern(regex) do
+      matches = pattern |> Regex.scan(string, capture: :first) |> Enum.map(fn [val] -> val end)
+      to_node_boolean(string in matches)
     else
       _ -> @node_false
     end
@@ -190,4 +191,8 @@ defmodule JSONPath.Eval do
   defp type_strict_op(_, _, _), do: false
 
   defp discard_nothing(results), do: Enum.reject(results, &(&1 == :nothing))
+
+  defp compile_pattern(%Regex{} = pattern), do: {:ok, pattern}
+  defp compile_pattern(pattern) when is_binary(pattern), do: Regex.compile(pattern, "u")
+  defp compile_pattern(_), do: [:nothing]
 end

@@ -184,7 +184,7 @@ defmodule JSONPath.Tokenizer do
     {:error,
      %JSONPath.Error{
        type: :invalid_expression,
-       message: "unexpected sequence :#{to_string(rest)}"
+       message: "unexpected sequence: #{to_string(rest)}"
      }}
   end
 

@@ -102,7 +102,7 @@ defmodule JSONPathTest do
     test "length takes 1 argument" do
       error = %JSONPath.Error{
         expression: "length(@, @['a'])",
-        message: "got 2 arguments but function length expects 1 arguments",
+        message: "got 2 arguments but 'length' expects 1 argument",
         type: :invalid_expression
       }
 
@@ -112,7 +112,7 @@ defmodule JSONPathTest do
     test "count takes 1 argument" do
       error = %JSONPath.Error{
         expression: "count(@, @['a'])",
-        message: "got 2 arguments but function count expects 1 arguments",
+        message: "got 2 arguments but 'count' expects 1 argument",
         type: :invalid_expression
       }
 
@@ -122,7 +122,7 @@ defmodule JSONPathTest do
     test "value takes 1 argument" do
       error = %JSONPath.Error{
         expression: "value(@, @['a'])",
-        message: "got 2 arguments but function value expects 1 arguments",
+        message: "got 2 arguments but 'value' expects 1 argument",
         type: :invalid_expression
       }
 
@@ -133,7 +133,7 @@ defmodule JSONPathTest do
     test "match and search take 2 arguments" do
       error = %JSONPath.Error{
         expression: "match(@)",
-        message: "got 1 arguments but function match expects 2 arguments",
+        message: "got 1 argument but 'match' expects 2 arguments",
         type: :invalid_expression
       }
 
@@ -141,7 +141,7 @@ defmodule JSONPathTest do
 
       error = %JSONPath.Error{
         expression: "search(@)",
-        message: "got 1 arguments but function search expects 2 arguments",
+        message: "got 1 argument but 'search' expects 2 arguments",
         type: :invalid_expression
       }
 
@@ -217,6 +217,42 @@ defmodule JSONPathTest do
 
       assert {:ok, [1, "b"]} == JSONPath.evaluate(%{"a" => 1, "c" => %{"a" => "b"}}, query)
       assert {:ok, ["d"]} == JSONPath.evaluate([%{"a" => "d"}], query)
+    end
+  end
+
+  describe "build!/1" do
+    test "returns AST on success" do
+      query = "$[1:3]"
+      expected_ast = {:selectors, :root, [{:slice, 1, 3, 1}]}
+      assert expected_ast == JSONPath.build!(query)
+    end
+
+    test "raises on error" do
+      query = "$[?length(@)]"
+
+      assert_raise JSONPath.Error,
+                   "invalid_expression (comparison operator expected): length(@)",
+                   fn -> JSONPath.build!(query) end
+    end
+  end
+
+  describe "evaluate!/2" do
+    test "returns nodelist on success" do
+      query = "$[?match(@, 'a*')]"
+      document = ["a", "aa", "baaa", ""]
+      assert ["a", "aa", ""] == JSONPath.evaluate!(document, query)
+    end
+
+    test "raises on error" do
+      query = "$[?match(@, '[a')]"
+      document = ["a", "aa", "baaa", ""]
+
+      error_msg =
+        "invalid_pattern (invalid regex pattern: missing terminating ] for character class): [a"
+
+      assert_raise JSONPath.Error, error_msg, fn ->
+        JSONPath.evaluate!(document, query)
+      end
     end
   end
 end

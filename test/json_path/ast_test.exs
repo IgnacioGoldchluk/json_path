@@ -127,8 +127,45 @@ defmodule JSONPath.ASTTest do
       matches_ast(query, expected)
     end
 
+    test "precompiles literal regex in search and match when possible" do
+      query = "$[?search(@.x, 'foo'), ?match(@.y, 'bar')]"
+
+      {:ok, tokens} = Tokenizer.tokenize(query)
+      {:ok, ast} = AST.parse(tokens)
+
+      {:selectors, :root,
+       [
+         filter:
+           {:function, :search,
+            [{:selectors, :current_node, [property: "x"]}, {:literal, pattern1}]},
+         filter:
+           {:function, :match,
+            [{:selectors, :current_node, [property: "y"]}, {:literal, pattern2}]}
+       ]} = ast
+
+      assert is_struct(pattern1, Regex)
+      assert is_struct(pattern2, Regex)
+      assert Regex.source(pattern1) == "foo"
+      assert Regex.source(pattern2) == "bar"
+      assert :unicode in Regex.opts(pattern1)
+      assert :unicode in Regex.opts(pattern2)
+    end
+
+    test "returns error for invalid literal regex" do
+      query = "$[?match(@.x, '*a')]"
+
+      expected_error = %JSONPath.Error{
+        expression: "*a",
+        message: "invalid regex pattern: quantifier does not follow a repeatable item",
+        type: :invalid_pattern
+      }
+
+      {:ok, tokens} = Tokenizer.tokenize(query)
+      assert {:error, expected_error} == AST.parse(tokens)
+    end
+
     test "functions with multiple arguments" do
-      query = "$..[?match(@.name, \"[a-z]+\")]"
+      query = "$..[?match(@.name, @.pattern)]"
 
       expected = {
         :descendant_segment,
@@ -136,7 +173,10 @@ defmodule JSONPath.ASTTest do
         [
           {:filter,
            {:function, :match,
-            [{:selectors, :current_node, [{:property, "name"}]}, {:literal, "[a-z]+"}]}}
+            [
+              {:selectors, :current_node, [{:property, "name"}]},
+              {:selectors, :current_node, [property: "pattern"]}
+            ]}}
         ]
       }
 

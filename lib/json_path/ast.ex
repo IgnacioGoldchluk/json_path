@@ -105,7 +105,7 @@ defmodule JSONPath.AST do
 
   defp parse_primary([{:function, function}, :lparen | tokens]) do
     {arguments, remaining} = parse_function_arguments(tokens)
-    {{:function, function, arguments}, remaining}
+    {{:function, function, arguments} |> precompile_regex(), remaining}
   end
 
   defp parse_primary([:lparen | tokens]) do
@@ -126,6 +126,26 @@ defmodule JSONPath.AST do
       :rparen -> {Enum.reverse([argument | arguments]), remaining_tokens}
     end
   end
+
+  defp precompile_regex({:function, f, [arg, {:literal, regex}]})
+       when f in [:match, :search] and is_binary(regex) do
+    case Regex.compile(regex, "u") do
+      {:ok, pattern} ->
+        {:function, f, [arg, {:literal, pattern}]}
+
+      {:error, {reason, _at}} ->
+        throw(
+          {:error,
+           %JSONPath.Error{
+             type: :invalid_pattern,
+             message: "invalid regex pattern: #{reason}",
+             expression: regex
+           }}
+        )
+    end
+  end
+
+  defp precompile_regex(node), do: node
 
   defp validate(parsed_ast) do
     validations = [
@@ -256,12 +276,17 @@ defmodule JSONPath.AST do
        %JSONPath.Error{
          type: :invalid_expression,
          expression: ast_to_string(node),
-         message: "got #{got} arguments but function #{name} expects #{expected} arguments"
+         message:
+           "got #{got} #{arg_word(got)} but '#{name}' expects #{expected} #{arg_word(expected)}"
        }}
     end
   end
 
   defp function_arity(_), do: :ok
+
+  defp arg_word(0), do: "argument"
+  defp arg_word(1), do: "argument"
+  defp arg_word(n) when n > 1, do: "arguments"
 
   defp args(:match), do: 2
   defp args(:search), do: 2
@@ -367,6 +392,7 @@ defmodule JSONPath.AST do
   defp ast_to_string({:property, name}), do: "'#{name}'"
   defp ast_to_string({:literal, s}) when is_binary(s), do: "'#{s}'"
   defp ast_to_string({:literal, nil}), do: "null"
+  defp ast_to_string({:literal, %Regex{} = pattern}), do: "'#{Regex.source(pattern)}'"
   defp ast_to_string({:literal, val}), do: to_string(val)
   defp ast_to_string({:filter, clause}), do: "?(#{ast_to_string(clause)})"
   defp ast_to_string(:wildcard), do: "*"

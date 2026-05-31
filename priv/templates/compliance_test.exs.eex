@@ -1,0 +1,39 @@
+defmodule JSONPath.ComplianceTest do
+  use ExUnit.Case
+
+<%= for testcase <- tests do %>
+  <%= if Map.get(testcase, "skip", false) do %>
+    @tag :skip
+  <% end %>
+  test "<%= testcase["name"] %>" do
+    testcase = <%= inspect(testcase, limit: :infinity) %>
+    selector = testcase["selector"]
+    root = testcase["document"]
+    <%= if not is_nil(Map.get(testcase, "result")) do %>
+      result = testcase["result"]
+    <% end %>
+    <%= if not is_nil(Map.get(testcase, "results")) do %>
+      results = testcase["results"]
+    <% end %>
+
+    <%= if Map.get(testcase, "invalid_selector", false) == true do %>
+      assert {:error, %JSONPath.Error{}} = JSONPath.evaluate(root, selector)
+    <% else %>
+      <%= if not is_nil(Map.get(testcase, "result")) do %>
+        # Only one possible result
+        {:ok, value} = JSONPath.evaluate(root, selector)
+        assert value == result,
+                "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+      <% else %>
+        <%= if not is_nil(Map.get(testcase, "results")) do %>
+          # Multiple results
+          {:ok, value} = JSONPath.evaluate(root, selector)
+          assert value in results, "no match for query #{selector} and root #{inspect(root)}"
+        <% else %>
+          raise "Unexpected testcase format: #{inspect(testcase)}"
+        <% end %>
+      <% end %>
+    <% end %>
+  end
+<% end %>
+end

@@ -59,6 +59,23 @@ iex(2)> JSONPath.evaluate([%{"name" => "Alice"}], "$[?match(@.name)]")
  }}
 ```
 
+Retrieving node values, normalized paths or both
+```elixir
+iex(1)> root = %{"people" => [
+...>    %{"name" => "Alice", "age" => 20},
+...>    %{"name" => "Bob", "age" => 30}
+...>  ]}
+iex(2)> query = "$.people[?@.age > 25]"
+iex(3)> JSONPath.evaluate(root, query, :values)
+{:ok, [%{"name" => "Bob", "age" => 30}]}
+
+iex(4)> JSONPath.evaluate(root, query, :paths)
+{:ok, ["$['people'][1]"]}
+
+iex(5)> JSONPath.evaluate(root, query, :values_and_paths)
+{:ok, [{%{"name" => "Bob", "age" => 30}, "$['people'][1]"}]}
+```
+
 ## Notes and considerations
 - JSONPath always returns a list of nodes, as specified by RFC-9535, even for expressions that could return at most one element such as `$.x`.
 - Atom keys are not supported.

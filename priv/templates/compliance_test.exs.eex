@@ -10,10 +10,10 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
     <%= if not is_nil(Map.get(testcase, "result")) do %>
-      result = testcase["result"]
+      %{"result" => result, "result_paths" => result_path} = testcase
     <% end %>
     <%= if not is_nil(Map.get(testcase, "results")) do %>
-      results = testcase["results"]
+      %{"results" => results, "results_paths" => results_path} = testcase
     <% end %>
 
     <%= if Map.get(testcase, "invalid_selector", false) == true do %>
@@ -24,11 +24,16 @@ defmodule JSONPath.ComplianceTest do
         {:ok, value} = JSONPath.evaluate(root, selector)
         assert value == result,
                 "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+        {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+        assert paths == result_path,
+                "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
       <% else %>
         <%= if not is_nil(Map.get(testcase, "results")) do %>
           # Multiple results
           {:ok, value} = JSONPath.evaluate(root, selector)
           assert value in results, "no match for query #{selector} and root #{inspect(root)}"
+          {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+          assert paths in results_path, "no path match for query #{selector} and root #{inspect(root)}"
         <% else %>
           raise "Unexpected testcase format: #{inspect(testcase)}"
         <% end %>

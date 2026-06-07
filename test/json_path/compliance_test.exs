@@ -13,13 +13,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, no leading whitespace" do
@@ -62,13 +67,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, name shorthand, extended unicode ☺" do
@@ -83,13 +93,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, name shorthand, underscore" do
@@ -104,13 +119,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, name shorthand, symbol" do
@@ -151,13 +171,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, name shorthand, array data" do
@@ -172,13 +197,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, name shorthand, object data, nested" do
@@ -193,13 +223,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, wildcard shorthand, object data" do
@@ -214,11 +249,13 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    results = testcase["results"]
+    %{"results" => results, "results_paths" => results_path} = testcase
 
     # Multiple results
     {:ok, value} = JSONPath.evaluate(root, selector)
     assert value in results, "no match for query #{selector} and root #{inspect(root)}"
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+    assert paths in results_path, "no path match for query #{selector} and root #{inspect(root)}"
   end
 
   test "basic, wildcard shorthand, array data" do
@@ -233,13 +270,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, wildcard selector, array data" do
@@ -254,13 +296,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, wildcard shorthand, then name shorthand" do
@@ -275,11 +322,13 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    results = testcase["results"]
+    %{"results" => results, "results_paths" => results_path} = testcase
 
     # Multiple results
     {:ok, value} = JSONPath.evaluate(root, selector)
     assert value in results, "no match for query #{selector} and root #{inspect(root)}"
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+    assert paths in results_path, "no path match for query #{selector} and root #{inspect(root)}"
   end
 
   test "basic, multiple selectors" do
@@ -294,13 +343,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, multiple selectors, space instead of comma" do
@@ -355,13 +409,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, multiple selectors, name and index, object data" do
@@ -376,13 +435,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, multiple selectors, index and slice" do
@@ -397,13 +461,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, multiple selectors, index and slice, overlapping" do
@@ -418,13 +487,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, multiple selectors, duplicate index" do
@@ -439,13 +513,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, multiple selectors, wildcard and index" do
@@ -472,13 +551,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, multiple selectors, wildcard and name" do
@@ -493,11 +577,13 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    results = testcase["results"]
+    %{"results" => results, "results_paths" => results_path} = testcase
 
     # Multiple results
     {:ok, value} = JSONPath.evaluate(root, selector)
     assert value in results, "no match for query #{selector} and root #{inspect(root)}"
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+    assert paths in results_path, "no path match for query #{selector} and root #{inspect(root)}"
   end
 
   test "basic, multiple selectors, wildcard and slice" do
@@ -525,13 +611,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, multiple selectors, multiple wildcards" do
@@ -546,13 +637,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, empty segment" do
@@ -580,13 +676,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, descendant segment, name shorthand" do
@@ -601,13 +702,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, name shorthand, true" do
@@ -623,13 +729,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, name shorthand, false" do
@@ -645,13 +756,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, name shorthand, null" do
@@ -667,13 +783,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, descendant segment, wildcard shorthand, array data" do
@@ -688,13 +809,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, descendant segment, wildcard selector, array data" do
@@ -709,13 +835,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, descendant segment, wildcard selector, nested arrays" do
@@ -733,11 +864,13 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    results = testcase["results"]
+    %{"results" => results, "results_paths" => results_path} = testcase
 
     # Multiple results
     {:ok, value} = JSONPath.evaluate(root, selector)
     assert value in results, "no match for query #{selector} and root #{inspect(root)}"
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+    assert paths in results_path, "no path match for query #{selector} and root #{inspect(root)}"
   end
 
   test "basic, descendant segment, wildcard selector, nested objects" do
@@ -766,11 +899,13 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    results = testcase["results"]
+    %{"results" => results, "results_paths" => results_path} = testcase
 
     # Multiple results
     {:ok, value} = JSONPath.evaluate(root, selector)
     assert value in results, "no match for query #{selector} and root #{inspect(root)}"
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+    assert paths in results_path, "no path match for query #{selector} and root #{inspect(root)}"
   end
 
   test "basic, descendant segment, wildcard shorthand, object data" do
@@ -785,13 +920,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, descendant segment, wildcard shorthand, nested data" do
@@ -806,13 +946,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, descendant segment, multiple selectors" do
@@ -827,13 +972,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "basic, descendant segment, object traversal, multiple selectors" do
@@ -851,11 +1001,13 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    results = testcase["results"]
+    %{"results" => results, "results_paths" => results_path} = testcase
 
     # Multiple results
     {:ok, value} = JSONPath.evaluate(root, selector)
     assert value in results, "no match for query #{selector} and root #{inspect(root)}"
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+    assert paths in results_path, "no path match for query #{selector} and root #{inspect(root)}"
   end
 
   test "basic, bald descendant segment" do
@@ -909,11 +1061,13 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    results = testcase["results"]
+    %{"results" => results, "results_paths" => results_path} = testcase
 
     # Multiple results
     {:ok, value} = JSONPath.evaluate(root, selector)
     assert value in results, "no match for query #{selector} and root #{inspect(root)}"
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+    assert paths in results_path, "no path match for query #{selector} and root #{inspect(root)}"
   end
 
   test "filter, existence" do
@@ -928,13 +1082,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, existence, present with null" do
@@ -949,13 +1108,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, absolute existence, without segments" do
@@ -970,11 +1134,13 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    results = testcase["results"]
+    %{"results" => results, "results_paths" => results_path} = testcase
 
     # Multiple results
     {:ok, value} = JSONPath.evaluate(root, selector)
     assert value in results, "no match for query #{selector} and root #{inspect(root)}"
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+    assert paths in results_path, "no path match for query #{selector} and root #{inspect(root)}"
   end
 
   test "filter, absolute existence, with segments" do
@@ -989,13 +1155,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals string, single quotes" do
@@ -1010,13 +1181,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals numeric string, single quotes" do
@@ -1031,13 +1207,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals string, double quotes" do
@@ -1052,13 +1233,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals numeric string, double quotes" do
@@ -1073,13 +1259,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number" do
@@ -1099,13 +1290,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals null" do
@@ -1120,13 +1316,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals null, absent from data" do
@@ -1141,13 +1342,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals true" do
@@ -1162,13 +1368,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals false" do
@@ -1183,13 +1394,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals self" do
@@ -1204,13 +1420,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, absolute, equals self" do
@@ -1225,13 +1446,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals, absent from index selector equals absent from name selector" do
@@ -1246,13 +1472,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, deep equality, arrays" do
@@ -1272,13 +1503,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, deep equality, objects" do
@@ -1302,13 +1538,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, not-equals string, single quotes" do
@@ -1323,13 +1564,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, not-equals numeric string, single quotes" do
@@ -1344,13 +1590,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, not-equals string, single quotes, different type" do
@@ -1365,13 +1616,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, not-equals string, double quotes" do
@@ -1386,13 +1642,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, not-equals numeric string, double quotes" do
@@ -1407,13 +1668,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, not-equals string, double quotes, different types" do
@@ -1428,13 +1694,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, not-equals number" do
@@ -1449,13 +1720,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, not-equals number, different types" do
@@ -1470,13 +1746,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, not-equals null" do
@@ -1491,13 +1772,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, not-equals null, absent from data" do
@@ -1512,13 +1798,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, not-equals true" do
@@ -1533,13 +1824,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, not-equals false" do
@@ -1554,13 +1850,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, less than string, single quotes" do
@@ -1575,13 +1876,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, less than string, double quotes" do
@@ -1596,13 +1902,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, less than number" do
@@ -1622,13 +1933,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, less than null" do
@@ -1643,13 +1959,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, less than true" do
@@ -1664,13 +1985,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, less than false" do
@@ -1685,13 +2011,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, less than or equal to string, single quotes" do
@@ -1706,13 +2037,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, less than or equal to string, double quotes" do
@@ -1727,13 +2063,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, less than or equal to number" do
@@ -1753,13 +2094,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, less than or equal to null" do
@@ -1774,13 +2120,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, less than or equal to true" do
@@ -1795,13 +2146,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, less than or equal to false" do
@@ -1816,13 +2172,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, greater than string, single quotes" do
@@ -1841,13 +2202,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, greater than string, double quotes" do
@@ -1866,13 +2232,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, greater than number" do
@@ -1892,13 +2263,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, greater than null" do
@@ -1913,13 +2289,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, greater than true" do
@@ -1934,13 +2315,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, greater than false" do
@@ -1955,13 +2341,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, greater than or equal to string, single quotes" do
@@ -1980,13 +2371,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, greater than or equal to string, double quotes" do
@@ -2005,13 +2401,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, greater than or equal to number" do
@@ -2031,13 +2432,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, greater than or equal to null" do
@@ -2052,13 +2458,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, greater than or equal to true" do
@@ -2073,13 +2484,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, greater than or equal to false" do
@@ -2094,13 +2510,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, exists and not-equals null, absent from data" do
@@ -2115,13 +2536,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, exists and exists, data false" do
@@ -2136,13 +2562,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, exists or exists, data false" do
@@ -2157,13 +2588,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, and" do
@@ -2178,13 +2614,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, or" do
@@ -2204,13 +2645,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, not expression" do
@@ -2229,13 +2675,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, not exists" do
@@ -2250,13 +2701,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, not exists, data null" do
@@ -2271,13 +2727,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, non-singular existence, wildcard" do
@@ -2292,13 +2753,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, non-singular existence, multiple" do
@@ -2313,13 +2779,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, non-singular existence, slice" do
@@ -2334,13 +2805,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, non-singular existence, negated" do
@@ -2355,13 +2831,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, non-singular query in comparison, slice" do
@@ -2428,13 +2909,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, name segment on primitive, selects nothing" do
@@ -2449,13 +2935,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, name segment on array, selects nothing" do
@@ -2470,13 +2961,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, index segment on object, selects nothing" do
@@ -2491,13 +2987,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, followed by name selector" do
@@ -2512,13 +3013,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, followed by child segment that selects multiple elements" do
@@ -2533,13 +3039,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, relative non-singular query, index, equal" do
@@ -2962,13 +3473,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, multiple selectors, comparison" do
@@ -2983,13 +3499,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, multiple selectors, overlapping" do
@@ -3008,13 +3529,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, multiple selectors, filter and index" do
@@ -3029,13 +3555,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, multiple selectors, filter and wildcard" do
@@ -3054,13 +3585,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, multiple selectors, filter and slice" do
@@ -3075,13 +3611,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, multiple selectors, comparison filter, index and slice" do
@@ -3101,13 +3642,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, zero and negative zero" do
@@ -3126,13 +3672,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, negative zero and zero" do
@@ -3151,13 +3702,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, with and without decimal fraction" do
@@ -3172,13 +3728,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, exponent" do
@@ -3197,13 +3758,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, exponent upper e" do
@@ -3222,13 +3788,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, positive exponent" do
@@ -3247,13 +3818,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, negative exponent" do
@@ -3272,13 +3848,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, exponent 0" do
@@ -3293,13 +3874,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, exponent -0" do
@@ -3314,13 +3900,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, exponent +0" do
@@ -3335,13 +3926,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, exponent leading -0" do
@@ -3360,13 +3956,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, exponent +00" do
@@ -3381,13 +3982,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, decimal fraction" do
@@ -3406,13 +4012,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, decimal fraction, trailing 0" do
@@ -3431,13 +4042,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, decimal fraction, exponent" do
@@ -3456,13 +4072,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, decimal fraction, positive exponent" do
@@ -3481,13 +4102,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, decimal fraction, negative exponent" do
@@ -3506,13 +4132,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals number, invalid plus" do
@@ -3749,13 +4380,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals, empty node list and empty node list" do
@@ -3770,13 +4406,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, equals, empty node list and special nothing" do
@@ -3792,13 +4433,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, object data" do
@@ -3813,11 +4459,13 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    results = testcase["results"]
+    %{"results" => results, "results_paths" => results_path} = testcase
 
     # Multiple results
     {:ok, value} = JSONPath.evaluate(root, selector)
     assert value in results, "no match for query #{selector} and root #{inspect(root)}"
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+    assert paths in results_path, "no path match for query #{selector} and root #{inspect(root)}"
   end
 
   test "filter, two consecutive ands" do
@@ -3837,13 +4485,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, two consecutive ors" do
@@ -3868,13 +4521,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, multiple consecutive ands" do
@@ -3894,13 +4552,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, multiple consecutive ors" do
@@ -3925,13 +4588,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, multiple consecutive ors and ands" do
@@ -3962,13 +4630,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, and binds more tightly than or" do
@@ -3990,13 +4663,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, left to right evaluation" do
@@ -4026,13 +4704,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, group terms, left" do
@@ -4056,13 +4739,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, group terms, right" do
@@ -4085,13 +4773,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, string literal, single quote in double quotes" do
@@ -4106,13 +4799,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, string literal, double quote in single quotes" do
@@ -4128,13 +4826,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, string literal, escaped single quote in single quotes" do
@@ -4150,13 +4853,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, string literal, escaped double quote in double quotes" do
@@ -4172,13 +4880,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, literal true must be compared" do
@@ -4370,13 +5083,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, quoted True, single quotes" do
@@ -4392,13 +5110,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, false, incorrectly capitalized" do
@@ -4428,13 +5151,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, quoted False, single quotes" do
@@ -4450,13 +5178,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, null, incorrectly capitalized" do
@@ -4486,13 +5219,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "filter, quoted Null, single quotes" do
@@ -4508,13 +5246,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "index selector, first element" do
@@ -4530,13 +5273,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "index selector, second element" do
@@ -4552,13 +5300,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "index selector, out of bound" do
@@ -4574,13 +5327,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "index selector, min exact index" do
@@ -4596,13 +5354,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "index selector, max exact index" do
@@ -4618,13 +5381,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "index selector, min exact index - 1" do
@@ -4699,13 +5467,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "index selector, more negative" do
@@ -4721,13 +5494,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "index selector, negative out of bound" do
@@ -4743,13 +5521,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "index selector, on object" do
@@ -4765,13 +5548,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "index selector, leading 0" do
@@ -4870,13 +5658,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, absent data" do
@@ -4891,13 +5684,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, array data" do
@@ -4912,13 +5710,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, name, double quotes, contains single quote" do
@@ -4933,13 +5736,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, name, double quotes, nested" do
@@ -4954,13 +5762,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, embedded U+0000" do
@@ -5424,13 +6237,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, embedded U+007F" do
@@ -5446,13 +6264,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, supplementary plane character" do
@@ -5468,13 +6291,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, escaped double quote" do
@@ -5489,13 +6317,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, escaped reverse solidus" do
@@ -5510,13 +6343,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, escaped solidus" do
@@ -5531,13 +6369,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, escaped backspace" do
@@ -5552,13 +6395,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, escaped form feed" do
@@ -5573,13 +6421,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, escaped line feed" do
@@ -5594,13 +6447,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, escaped carriage return" do
@@ -5615,13 +6473,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, escaped tab" do
@@ -5636,13 +6499,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, escaped ☺, upper case hex" do
@@ -5658,13 +6526,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, escaped ☺, lower case hex" do
@@ -5680,13 +6553,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, surrogate pair 𝄞" do
@@ -5702,13 +6580,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, surrogate pair 😀" do
@@ -5724,13 +6607,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, before high surrogates" do
@@ -5746,13 +6634,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, after low surrogates" do
@@ -5768,13 +6661,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, double quotes, invalid escaped single quote" do
@@ -6144,13 +7042,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, single quotes, absent data" do
@@ -6165,13 +7068,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, single quotes, array data" do
@@ -6186,13 +7094,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, single quotes, embedded U+0000" do
@@ -6656,13 +7569,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, single quotes, escaped single quote" do
@@ -6677,13 +7595,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, single quotes, escaped reverse solidus" do
@@ -6698,13 +7621,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, single quotes, escaped solidus" do
@@ -6720,13 +7648,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, single quotes, escaped backspace" do
@@ -6741,13 +7674,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, single quotes, escaped form feed" do
@@ -6762,13 +7700,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, single quotes, escaped line feed" do
@@ -6783,13 +7726,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, single quotes, escaped carriage return" do
@@ -6804,13 +7752,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, single quotes, escaped tab" do
@@ -6825,13 +7778,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, single quotes, escaped ☺, upper case hex" do
@@ -6847,13 +7805,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, single quotes, escaped ☺, lower case hex" do
@@ -6869,13 +7832,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, single quotes, surrogate pair 𝄞" do
@@ -6891,13 +7859,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, single quotes, surrogate pair 😀" do
@@ -6913,13 +7886,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, single quotes, invalid escaped double quote" do
@@ -6973,13 +7951,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "name selector, single quotes, empty" do
@@ -6994,13 +7977,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, slice selector" do
@@ -7016,13 +8004,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, slice selector with step" do
@@ -7038,13 +8031,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, slice selector with everything omitted, short form" do
@@ -7060,13 +8058,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, slice selector with everything omitted, long form" do
@@ -7082,13 +8085,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, slice selector with start omitted" do
@@ -7104,13 +8112,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, slice selector with start and end omitted" do
@@ -7126,13 +8139,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, negative step with default start and end" do
@@ -7148,13 +8166,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, negative step with default start" do
@@ -7170,13 +8193,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, negative step with default end" do
@@ -7192,13 +8220,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, larger negative step" do
@@ -7214,13 +8247,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, negative range with default step" do
@@ -7236,13 +8274,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, negative range with negative step" do
@@ -7258,13 +8301,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, negative range with larger negative step" do
@@ -7280,13 +8328,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, larger negative range with larger negative step" do
@@ -7302,13 +8355,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, negative from, positive to" do
@@ -7324,13 +8382,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, negative from" do
@@ -7346,13 +8409,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, positive from, negative to" do
@@ -7368,13 +8436,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, negative from, positive to, negative step" do
@@ -7390,13 +8463,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, positive from, negative to, negative step" do
@@ -7412,13 +8490,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, in serial, on nested array" do
@@ -7434,13 +8517,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, in serial, on flat array" do
@@ -7456,13 +8544,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, negative from, negative to, positive step" do
@@ -7478,13 +8571,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, too many colons" do
@@ -7528,13 +8626,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, empty range" do
@@ -7550,13 +8653,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, slice selector with everything omitted with empty array" do
@@ -7572,13 +8680,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, negative step with empty array" do
@@ -7594,13 +8707,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, maximal range with positive step" do
@@ -7627,13 +8745,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, maximal range with negative step" do
@@ -7649,13 +8772,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, excessively large to value" do
@@ -7671,13 +8799,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, excessively small from value" do
@@ -7693,13 +8826,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, excessively large from value with negative step" do
@@ -7715,13 +8853,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, excessively small to value with negative step" do
@@ -7737,13 +8880,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, excessively large step" do
@@ -7759,13 +8907,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, excessively small step" do
@@ -7781,13 +8934,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, start, min exact" do
@@ -7803,13 +8961,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, start, max exact" do
@@ -7825,13 +8988,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, start, min exact - 1" do
@@ -7875,13 +9043,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, end, max exact" do
@@ -7897,13 +9070,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, end, min exact - 1" do
@@ -7947,13 +9125,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, step, max exact" do
@@ -7969,13 +9152,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "slice selector, step, min exact - 1" do
@@ -8361,13 +9549,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, count, single-node arg" do
@@ -8383,13 +9576,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, count, multiple-selector arg" do
@@ -8405,13 +9603,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, count, non-query arg, number" do
@@ -8539,13 +9742,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, length, string data, unicode" do
@@ -8561,13 +9769,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, length, array data" do
@@ -8583,13 +9796,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, length, missing data" do
@@ -8605,13 +9823,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, length, number arg" do
@@ -8627,13 +9850,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, length, true arg" do
@@ -8649,13 +9877,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, length, false arg" do
@@ -8671,13 +9904,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, length, null arg" do
@@ -8693,13 +9931,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, length, result must be compared" do
@@ -8771,13 +10014,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, length, arg is special nothing" do
@@ -8793,13 +10041,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, length, non-singular query arg, multiple index selectors" do
@@ -8843,13 +10096,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, match, double quotes" do
@@ -8865,13 +10123,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, match, regex from the document" do
@@ -8890,13 +10153,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, match, don't select match" do
@@ -8912,13 +10180,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, match, not a match" do
@@ -8934,13 +10207,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, match, select non-match" do
@@ -8956,13 +10234,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, match, non-string first arg" do
@@ -8978,13 +10261,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, match, non-string second arg" do
@@ -9000,13 +10288,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, match, filter, match function, unicode char class, uppercase" do
@@ -9022,13 +10315,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, match, filter, match function, unicode char class negated, uppercase" do
@@ -9044,13 +10342,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, match, filter, match function, unicode, surrogate pair" do
@@ -9066,13 +10369,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   @tag :skip
@@ -9092,13 +10400,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   @tag :skip
@@ -9118,13 +10431,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, match, result cannot be compared" do
@@ -9182,13 +10500,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, match, dot in character class" do
@@ -9204,13 +10527,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, match, escaped dot" do
@@ -9226,13 +10554,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   @tag :skip
@@ -9252,13 +10585,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   @tag :skip
@@ -9278,13 +10616,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, match, escaped right square bracket" do
@@ -9300,13 +10643,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, match, explicit caret" do
@@ -9322,13 +10670,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, match, explicit dollar" do
@@ -9344,13 +10697,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, search, at the end" do
@@ -9366,13 +10724,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, search, double quotes" do
@@ -9388,13 +10751,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, search, at the start" do
@@ -9410,13 +10778,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, search, in the middle" do
@@ -9432,13 +10805,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, search, regex from the document" do
@@ -9457,13 +10835,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, search, don't select match" do
@@ -9479,13 +10862,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, search, not a match" do
@@ -9501,13 +10889,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, search, select non-match" do
@@ -9523,13 +10916,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, search, non-string first arg" do
@@ -9545,13 +10943,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, search, non-string second arg" do
@@ -9567,13 +10970,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, search, filter, search function, unicode char class, uppercase" do
@@ -9589,13 +10997,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, search, filter, search function, unicode char class negated, uppercase" do
@@ -9612,13 +11025,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, search, filter, search function, unicode, surrogate pair" do
@@ -9634,13 +11052,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   @tag :skip
@@ -9660,13 +11083,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   @tag :skip
@@ -9686,13 +11114,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, search, result cannot be compared" do
@@ -9753,13 +11186,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, search, dot in character class" do
@@ -9775,13 +11213,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, search, escaped dot" do
@@ -9797,13 +11240,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   @tag :skip
@@ -9823,13 +11271,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   @tag :skip
@@ -9849,13 +11302,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, search, escaped right square bracket" do
@@ -9871,13 +11329,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, value, single-value nodelist" do
@@ -9893,13 +11356,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, value, multi-value nodelist" do
@@ -9915,13 +11383,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "functions, value, too few params" do
@@ -9979,13 +11452,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, filter, newline between question mark and expression" do
@@ -10001,13 +11479,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, filter, tab between question mark and expression" do
@@ -10023,13 +11506,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, filter, return between question mark and expression" do
@@ -10045,13 +11533,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, filter, space between question mark and parenthesized expression" do
@@ -10067,13 +11560,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, filter, newline between question mark and parenthesized expression" do
@@ -10089,13 +11587,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, filter, tab between question mark and parenthesized expression" do
@@ -10111,13 +11614,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, filter, return between question mark and parenthesized expression" do
@@ -10133,13 +11641,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, filter, space between parenthesized expression and bracket" do
@@ -10155,13 +11668,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, filter, newline between parenthesized expression and bracket" do
@@ -10177,13 +11695,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, filter, tab between parenthesized expression and bracket" do
@@ -10199,13 +11722,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, filter, return between parenthesized expression and bracket" do
@@ -10221,13 +11749,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, filter, space between bracket and question mark" do
@@ -10243,13 +11776,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, filter, newline between bracket and question mark" do
@@ -10265,13 +11803,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, filter, tab between bracket and question mark" do
@@ -10287,13 +11830,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, filter, return between bracket and question mark" do
@@ -10309,13 +11857,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, space between function name and parenthesis" do
@@ -10387,13 +11940,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, newline between parenthesis and arg" do
@@ -10409,13 +11967,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, tab between parenthesis and arg" do
@@ -10431,13 +11994,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, return between parenthesis and arg" do
@@ -10453,13 +12021,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, space between arg and comma" do
@@ -10475,13 +12048,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, newline between arg and comma" do
@@ -10497,13 +12075,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, tab between arg and comma" do
@@ -10519,13 +12102,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, return between arg and comma" do
@@ -10541,13 +12129,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, space between comma and arg" do
@@ -10563,13 +12156,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, newline between comma and arg" do
@@ -10585,13 +12183,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, tab between comma and arg" do
@@ -10607,13 +12210,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, return between comma and arg" do
@@ -10629,13 +12237,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, space between arg and parenthesis" do
@@ -10651,13 +12264,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, newline between arg and parenthesis" do
@@ -10673,13 +12291,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, tab between arg and parenthesis" do
@@ -10695,13 +12318,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, return between arg and parenthesis" do
@@ -10717,13 +12345,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, spaces in a relative singular selector" do
@@ -10739,13 +12372,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, newlines in a relative singular selector" do
@@ -10761,13 +12399,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, tabs in a relative singular selector" do
@@ -10783,13 +12426,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, returns in a relative singular selector" do
@@ -10805,13 +12453,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, spaces in an absolute singular selector" do
@@ -10827,13 +12480,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, newlines in an absolute singular selector" do
@@ -10849,13 +12507,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, tabs in an absolute singular selector" do
@@ -10871,13 +12534,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, functions, returns in an absolute singular selector" do
@@ -10893,13 +12561,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space before ||" do
@@ -10915,13 +12588,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline before ||" do
@@ -10937,13 +12615,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab before ||" do
@@ -10959,13 +12642,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return before ||" do
@@ -10981,13 +12669,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space after ||" do
@@ -11003,13 +12696,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline after ||" do
@@ -11025,13 +12723,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab after ||" do
@@ -11047,13 +12750,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return after ||" do
@@ -11069,13 +12777,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space before &&" do
@@ -11091,13 +12804,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline before &&" do
@@ -11113,13 +12831,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab before &&" do
@@ -11135,13 +12858,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return before &&" do
@@ -11157,13 +12885,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space after &&" do
@@ -11179,13 +12912,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline after &&" do
@@ -11201,13 +12939,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab after &&" do
@@ -11223,13 +12966,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return after &&" do
@@ -11245,13 +12993,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space before ==" do
@@ -11267,13 +13020,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline before ==" do
@@ -11289,13 +13047,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab before ==" do
@@ -11311,13 +13074,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return before ==" do
@@ -11333,13 +13101,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space after ==" do
@@ -11355,13 +13128,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline after ==" do
@@ -11377,13 +13155,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab after ==" do
@@ -11399,13 +13182,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return after ==" do
@@ -11421,13 +13209,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space before !=" do
@@ -11443,13 +13236,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline before !=" do
@@ -11465,13 +13263,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab before !=" do
@@ -11487,13 +13290,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return before !=" do
@@ -11509,13 +13317,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space after !=" do
@@ -11531,13 +13344,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline after !=" do
@@ -11553,13 +13371,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab after !=" do
@@ -11575,13 +13398,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return after !=" do
@@ -11597,13 +13425,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space before <" do
@@ -11619,13 +13452,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline before <" do
@@ -11641,13 +13479,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab before <" do
@@ -11663,13 +13506,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return before <" do
@@ -11685,13 +13533,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space after <" do
@@ -11707,13 +13560,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline after <" do
@@ -11729,13 +13587,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab after <" do
@@ -11751,13 +13614,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return after <" do
@@ -11773,13 +13641,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space before >" do
@@ -11795,13 +13668,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline before >" do
@@ -11817,13 +13695,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab before >" do
@@ -11839,13 +13722,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return before >" do
@@ -11861,13 +13749,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space after >" do
@@ -11883,13 +13776,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline after >" do
@@ -11905,13 +13803,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab after >" do
@@ -11927,13 +13830,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return after >" do
@@ -11949,13 +13857,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space before <=" do
@@ -11971,13 +13884,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline before <=" do
@@ -11993,13 +13911,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab before <=" do
@@ -12015,13 +13938,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return before <=" do
@@ -12037,13 +13965,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space after <=" do
@@ -12059,13 +13992,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline after <=" do
@@ -12081,13 +14019,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab after <=" do
@@ -12103,13 +14046,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return after <=" do
@@ -12125,13 +14073,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space before >=" do
@@ -12147,13 +14100,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline before >=" do
@@ -12169,13 +14127,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab before >=" do
@@ -12191,13 +14154,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return before >=" do
@@ -12213,13 +14181,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space after >=" do
@@ -12235,13 +14208,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline after >=" do
@@ -12257,13 +14235,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab after >=" do
@@ -12279,13 +14262,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return after >=" do
@@ -12301,13 +14289,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space between logical not and test expression" do
@@ -12323,13 +14316,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline between logical not and test expression" do
@@ -12345,13 +14343,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab between logical not and test expression" do
@@ -12367,13 +14370,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return between logical not and test expression" do
@@ -12389,13 +14397,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, space between logical not and parenthesized expression" do
@@ -12415,13 +14428,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, newline between logical not and parenthesized expression" do
@@ -12441,13 +14459,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, tab between logical not and parenthesized expression" do
@@ -12467,13 +14490,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, operators, return between logical not and parenthesized expression" do
@@ -12493,13 +14521,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, space between root and bracket" do
@@ -12515,13 +14548,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, newline between root and bracket" do
@@ -12537,13 +14575,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, tab between root and bracket" do
@@ -12559,13 +14602,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, return between root and bracket" do
@@ -12581,13 +14629,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, space between bracket and bracket" do
@@ -12603,13 +14656,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, newline between bracket and bracket" do
@@ -12625,13 +14683,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, tab between bracket and bracket" do
@@ -12647,13 +14710,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, return between bracket and bracket" do
@@ -12669,13 +14737,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, space between root and dot" do
@@ -12691,13 +14764,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, newline between root and dot" do
@@ -12713,13 +14791,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, tab between root and dot" do
@@ -12735,13 +14818,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, return between root and dot" do
@@ -12757,13 +14845,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, space between dot and name" do
@@ -12891,13 +14984,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, newline between bracket and selector" do
@@ -12913,13 +15011,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, tab between bracket and selector" do
@@ -12935,13 +15038,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, return between bracket and selector" do
@@ -12957,13 +15065,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, space between selector and bracket" do
@@ -12979,13 +15092,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, newline between selector and bracket" do
@@ -13001,13 +15119,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, tab between selector and bracket" do
@@ -13023,13 +15146,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, return between selector and bracket" do
@@ -13045,13 +15173,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, space between selector and comma" do
@@ -13067,13 +15200,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, newline between selector and comma" do
@@ -13089,13 +15227,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, tab between selector and comma" do
@@ -13111,13 +15254,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, return between selector and comma" do
@@ -13133,13 +15281,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, space between comma and selector" do
@@ -13155,13 +15308,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, newline between comma and selector" do
@@ -13177,13 +15335,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, tab between comma and selector" do
@@ -13199,13 +15362,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, selectors, return between comma and selector" do
@@ -13221,13 +15389,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, slice, space between start and colon" do
@@ -13243,13 +15416,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, slice, newline between start and colon" do
@@ -13265,13 +15443,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, slice, tab between start and colon" do
@@ -13287,13 +15470,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, slice, return between start and colon" do
@@ -13309,13 +15497,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, slice, space between colon and end" do
@@ -13331,13 +15524,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, slice, newline between colon and end" do
@@ -13353,13 +15551,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, slice, tab between colon and end" do
@@ -13375,13 +15578,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, slice, return between colon and end" do
@@ -13397,13 +15605,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, slice, space between end and colon" do
@@ -13419,13 +15632,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, slice, newline between end and colon" do
@@ -13441,13 +15659,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, slice, tab between end and colon" do
@@ -13463,13 +15686,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, slice, return between end and colon" do
@@ -13485,13 +15713,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, slice, space between colon and step" do
@@ -13507,13 +15740,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, slice, newline between colon and step" do
@@ -13529,13 +15767,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, slice, tab between colon and step" do
@@ -13551,13 +15794,18 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
   test "whitespace, slice, return between colon and step" do
@@ -13573,12 +15821,17 @@ defmodule JSONPath.ComplianceTest do
     selector = testcase["selector"]
     root = testcase["document"]
 
-    result = testcase["result"]
+    %{"result" => result, "result_paths" => result_path} = testcase
 
     # Only one possible result
     {:ok, value} = JSONPath.evaluate(root, selector)
 
     assert value == result,
            "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.evaluate(root, selector, :paths)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 end

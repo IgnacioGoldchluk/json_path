@@ -3,9 +3,10 @@ defmodule JSONPath.Eval.Slice do
   # This mess deserves its own module
 
   @doc """
-  Runs a slice of the given start, stop and step arguments
+  Runs a slice of the given start, stop and step arguments. Returns a list of
+  {value, index}
   """
-  @spec apply(list(), integer(), integer(), integer()) :: list()
+  @spec apply(list(), integer(), integer(), integer()) :: list({term(), non_neg_integer()})
   def apply(_array, _start, _stop, 0), do: []
   def apply([], _start, _stop, _step), do: []
 
@@ -17,7 +18,6 @@ defmodule JSONPath.Eval.Slice do
     array
     |> Enum.with_index()
     |> Enum.filter(fn {_v, i} -> in_slice?(i, start, stop, step) end)
-    |> Enum.map(fn {v, _i} -> v end)
     |> then(fn selected ->
       if step < 0, do: Enum.reverse(selected), else: selected
     end)

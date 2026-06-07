@@ -14,7 +14,7 @@ Add `json_path` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:json_path, "~> 0.2"}
+    {:json_path, "~> 0.3"}
   ]
 end
 ```

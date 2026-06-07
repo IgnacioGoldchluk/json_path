@@ -4,45 +4,60 @@ defmodule JSONPath.Eval do
   alias JSONPath.Eval.Slice
 
   @operators [:eq, :neq, :gt, :gte, :lt, :lte]
-  @node_true [true]
   @node_false []
 
-  def evaluate(root, ast), do: evaluate(root, root, ast)
+  @type path :: [String.t() | non_neg_integer()]
+  @type jsonpath_node :: {any(), path()}
 
-  defp evaluate(root, current_node, conditions) do
-    do_eval(root, current_node, conditions) |> discard_nothing()
+  def evaluate(root, ast), do: evaluate(root, root, ast, [])
+
+  @spec evaluate(any(), any(), any(), path()) :: jsonpath_node()
+  defp evaluate(root, current_node, conditions, path) do
+    do_eval(root, current_node, conditions, path) |> discard_nothing()
   end
 
-  defp do_eval(_root, current_node, {:selectors, :current_node, :full}), do: [current_node]
-  defp do_eval(root, _current_onde, {:selectors, :root, :full}), do: [root]
-
-  defp do_eval(root, current_node, {:selectors, :current_node, conditions}) do
-    Enum.flat_map(conditions, &evaluate_selector(root, current_node, &1)) |> discard_nothing()
+  defp do_eval(_root, current_node, {:selectors, :current_node, :full}, path) do
+    [{current_node, path}]
   end
 
-  defp do_eval(root, _current_node, {:selectors, :root, conditions}) do
-    Enum.flat_map(conditions, &evaluate_selector(root, root, &1)) |> discard_nothing()
+  defp do_eval(root, _current_node, {:selectors, :root, :full}, _) do
+    [{root, []}]
   end
 
-  defp do_eval(root, current_node, {:selectors, to_select, conditions}) do
-    evaluate(root, current_node, to_select)
-    |> Enum.flat_map(&evaluate_selectors(root, &1, conditions))
+  defp do_eval(root, current_node, {:selectors, :current_node, conditions}, path) do
+    conditions
+    |> Enum.flat_map(&evaluate_selector(root, current_node, &1, path))
+    |> discard_nothing()
+  end
+
+  defp do_eval(root, _current_node, {:selectors, :root, conditions}, path) do
+    conditions
+    |> Enum.flat_map(&evaluate_selector(root, root, &1, path))
+    |> discard_nothing()
+  end
+
+  defp do_eval(root, current_node, {:selectors, to_select, conditions}, path) do
+    evaluate(root, current_node, to_select, path)
+    |> Enum.flat_map(fn {node, path} -> evaluate_selectors(root, node, conditions, path) end)
     |> discard_nothing()
   end
 
   # For descendant segments:
   # - Nodes in an array are visited in order
   # - Nodes are visited before their descendants
-  defp do_eval(root, current_node, {:descendant_segment, selector, conditions}) do
-    evaluate(root, current_node, selector)
-    |> Enum.flat_map(fn node ->
-      node_matching = Enum.flat_map(conditions, &evaluate_selector(root, node, &1))
+  defp do_eval(root, current_node, {:descendant_segment, selector, conditions}, path) do
+    evaluate(root, current_node, selector, path)
+    |> Enum.flat_map(fn {node, path} ->
+      node_matching = Enum.flat_map(conditions, &evaluate_selector(root, node, &1, path))
+
       child_conditions = {:descendant_segment, {:selectors, :current_node, :full}, conditions}
 
       children_matching =
         node
-        |> iter_values()
-        |> Enum.flat_map(&evaluate(root, &1, child_conditions))
+        |> iter()
+        |> Enum.flat_map(fn {value, key_or_idx} ->
+          evaluate(root, value, child_conditions, [key_or_idx | path])
+        end)
 
       node_matching ++ children_matching
     end)
@@ -50,11 +65,11 @@ defmodule JSONPath.Eval do
   end
 
   # Filter expressions
-  defp do_eval(_root, _current_node, {:literal, value}), do: [value]
+  defp do_eval(_root, _current_node, {:literal, value}, path), do: [{value, path}]
 
-  defp do_eval(root, current_node, {op, left, right}) when op in @operators do
-    left_res = evaluate(root, current_node, left)
-    right_res = evaluate(root, current_node, right)
+  defp do_eval(root, current_node, {op, left, right}, path) when op in @operators do
+    left_res = evaluate(root, current_node, left, path) |> value()
+    right_res = evaluate(root, current_node, right, path) |> value()
 
     case op do
       :eq -> left_res == right_res
@@ -64,135 +79,157 @@ defmodule JSONPath.Eval do
       :gte -> left_res == right_res or type_strict_op(left_res, right_res, &Kernel.>/2)
       :lte -> left_res == right_res or type_strict_op(left_res, right_res, &Kernel.</2)
     end
-    |> to_node_boolean()
+    |> to_node_boolean(path)
   end
 
-  defp do_eval(root, current_node, {:not, expr}) do
-    case evaluate(root, current_node, expr) do
-      @node_false -> @node_true
+  defp do_eval(root, current_node, {:not, expr}, path) do
+    case evaluate(root, current_node, expr, path) do
+      @node_false -> [{true, path}]
       _ -> @node_false
     end
   end
 
-  defp do_eval(root, current_node, {:and, expr1, expr2}) do
-    case evaluate(root, current_node, expr1) do
+  defp do_eval(root, current_node, {:and, expr1, expr2}, path) do
+    case evaluate(root, current_node, expr1, path) do
       @node_false -> @node_false
-      _ -> evaluate(root, current_node, expr2) |> discard_nothing()
+      _ -> evaluate(root, current_node, expr2, path) |> discard_nothing()
     end
   end
 
-  defp do_eval(root, current_node, {:or, expr1, expr2}) do
-    case evaluate(root, current_node, expr1) do
-      @node_false -> evaluate(root, current_node, expr2)
+  defp do_eval(root, current_node, {:or, expr1, expr2}, path) do
+    case evaluate(root, current_node, expr1, path) do
+      @node_false -> evaluate(root, current_node, expr2, path)
       other -> other
     end
   end
 
   # Functions
-  defp do_eval(root, current_node, {:function, :length, [expr]}) do
-    case evaluate(root, current_node, expr) do
-      [value] when is_list(value) -> [length(value)]
-      [value] when is_map(value) -> [map_size(value)]
-      [value] when is_binary(value) -> [String.length(value)]
-      _ -> [:nothing]
+  defp do_eval(root, current_node, {:function, :length, [expr]}, path) do
+    case evaluate(root, current_node, expr, path) |> value() do
+      [value] when is_list(value) -> [{length(value), path}]
+      [value] when is_map(value) -> [{map_size(value), path}]
+      [value] when is_binary(value) -> [{String.length(value), path}]
+      _ -> [{:nothing, path}]
     end
   end
 
-  defp do_eval(root, current_node, {:function, :value, [expr]}) do
-    case evaluate(root, current_node, expr) do
-      [value] -> [value]
-      _ -> [:nothing]
+  defp do_eval(root, current_node, {:function, :value, [expr]}, path) do
+    case evaluate(root, current_node, expr, path) do
+      [{value, _}] -> [{value, path}]
+      _ -> [{:nothing, path}]
     end
   end
 
-  defp do_eval(root, current_node, {:function, :count, [expr]}) do
-    [length(evaluate(root, current_node, expr))]
+  defp do_eval(root, current_node, {:function, :count, [expr]}, path) do
+    [{length(evaluate(root, current_node, expr, path)), path}]
   end
 
-  defp do_eval(root, current_node, {:function, :search, [expr1, expr2]}) do
-    with [string] when is_binary(string) <- evaluate(root, current_node, expr1),
-         [regex] <- evaluate(root, current_node, expr2),
+  defp do_eval(root, current_node, {:function, :search, [expr1, expr2]}, path) do
+    with [string] when is_binary(string) <- evaluate(root, current_node, expr1, path) |> value(),
+         [regex] <- evaluate(root, current_node, expr2, path) |> value(),
          {:ok, pattern} <- compile_pattern(regex) do
-      Regex.match?(pattern, string) |> to_node_boolean()
+      Regex.match?(pattern, string) |> to_node_boolean(path)
     else
       _ -> @node_false
     end
   end
 
-  defp do_eval(root, current_node, {:function, :match, [expr1, expr2]}) do
-    with [string] when is_binary(string) <- evaluate(root, current_node, expr1),
-         [regex] <- evaluate(root, current_node, expr2),
+  defp do_eval(root, current_node, {:function, :match, [expr1, expr2]}, path) do
+    with [string] when is_binary(string) <- evaluate(root, current_node, expr1, path) |> value(),
+         [regex] <- evaluate(root, current_node, expr2, path) |> value(),
          {:ok, pattern} <- compile_pattern(regex) do
       matches = pattern |> Regex.scan(string, capture: :first) |> Enum.map(fn [val] -> val end)
-      to_node_boolean(string in matches)
+      to_node_boolean(string in matches, path)
     else
       _ -> @node_false
     end
   end
 
-  defp evaluate_selectors(root, current_node, conditions) when is_list(conditions) do
-    Enum.flat_map(conditions, &evaluate_selector(root, current_node, &1))
+  defp evaluate_selectors(root, current_node, conditions, path) when is_list(conditions) do
+    Enum.flat_map(conditions, &evaluate_selector(root, current_node, &1, path))
   end
 
-  defp evaluate_selector(_root, node, :wildcard) do
+  defp evaluate_selector(_root, node, :wildcard, path) do
     cond do
-      is_list(node) -> node
-      is_map(node) -> Map.values(node)
-      true -> [:nothing]
+      is_list(node) ->
+        node
+        |> Enum.with_index()
+        |> Enum.map(fn {val, idx} -> {val, [idx | path]} end)
+
+      is_map(node) ->
+        Enum.map(node, fn {k, v} -> {v, [k | path]} end)
+
+      true ->
+        [{:nothing, path}]
     end
   end
 
-  defp evaluate_selector(_root, node, {:property, key})
+  defp evaluate_selector(_root, node, {:property, key}, path)
        when is_map(node) and is_map_key(node, key) do
-    [node[key]]
+    [{node[key], [key | path]}]
   end
 
-  defp evaluate_selector(_root, _node, {:property, _}), do: [:nothing]
+  defp evaluate_selector(_root, _node, {:property, _}, path), do: [{:nothing, path}]
 
-  defp evaluate_selector(_root, node, {:index, idx}) when is_list(node) do
+  defp evaluate_selector(_root, node, {:index, idx}, path) when is_list(node) do
     case Enum.at(node, idx) do
-      nil -> [:nothing]
-      value -> [value]
+      nil -> [{:nothing, path}]
+      value -> [{value, [to_positive(idx, length(node)) | path]}]
     end
   end
 
-  defp evaluate_selector(_root, _node, {:index, _}), do: [:nothing]
+  defp evaluate_selector(_root, _node, {:index, _}, path), do: [{:nothing, path}]
 
-  defp evaluate_selector(_root, v, {:slice, _, _, step}) when step == 0 or not is_list(v),
-    do: [:nothing]
+  defp evaluate_selector(_root, v, {:slice, _, _, step}, path) when step == 0 or not is_list(v),
+    do: [{:nothing, path}]
 
-  defp evaluate_selector(_root, [], {:slice, _, _, _}), do: [:nothing]
+  defp evaluate_selector(_root, [], {:slice, _, _, _}, path), do: [{:nothing, path}]
 
-  defp evaluate_selector(_, node, {:slice, start, stop, step}) when is_list(node) do
-    Slice.apply(node, start, stop, step)
+  defp evaluate_selector(_, node, {:slice, start, stop, step}, path) when is_list(node) do
+    Enum.map(Slice.apply(node, start, stop, step), fn {value, index} ->
+      {value, [index | path]}
+    end)
   end
 
-  defp evaluate_selector(root, node, {:filter, expr}) when is_map(node) or is_list(node) do
-    node |> iter_values() |> Enum.filter(&true_expr?(root, &1, expr))
+  defp evaluate_selector(root, node, {:filter, expr}, path) when is_map(node) or is_list(node) do
+    node
+    |> iter()
+    |> Enum.filter(fn {node, key_or_idx} ->
+      true_expr?(root, node, expr, [key_or_idx | path])
+    end)
+    |> Enum.map(fn {node, key_or_idx} -> {node, [key_or_idx | path]} end)
   end
 
-  defp evaluate_selector(_root, _node, {:filter, _}), do: [:nothing]
+  defp evaluate_selector(_root, _node, {:filter, _}, path), do: [{:nothing, path}]
 
-  defp iter_values(node) when is_list(node), do: node
-  defp iter_values(node) when is_map(node), do: Map.values(node)
-  defp iter_values(_node), do: []
+  defp iter(node) when is_list(node), do: Enum.with_index(node)
+  defp iter(node) when is_map(node), do: Enum.map(node, fn {k, v} -> {v, k} end)
+  defp iter(_node), do: []
 
-  defp true_expr?(root, node, expr), do: not Enum.empty?(evaluate(root, node, expr))
+  defp true_expr?(root, node, expr, path), do: not Enum.empty?(evaluate(root, node, expr, path))
 
   # Since JSON Path uses arrays to express true/false, we must convert some boolean
   # results (from ==, >, etc.) to an array with equivalent behavior
-  defp to_node_boolean(true), do: @node_true
-  defp to_node_boolean(false), do: @node_false
-  defp to_node_boolean(@node_true), do: @node_true
-  defp to_node_boolean(@node_false), do: @node_false
+  defp to_node_boolean(true, path), do: [{true, path}]
+  defp to_node_boolean(false, _path), do: []
+  defp to_node_boolean([true], path), do: [{true, path}]
+  defp to_node_boolean([], _path), do: []
 
   defp type_strict_op([l], [r], func) when is_binary(l) and is_binary(r), do: func.(l, r)
   defp type_strict_op([l], [r], func) when is_number(l) and is_number(r), do: func.(l, r)
   defp type_strict_op(_, _, _), do: false
 
-  defp discard_nothing(results), do: Enum.reject(results, &(&1 == :nothing))
+  @spec discard_nothing(list(node)) :: list(node)
+  defp discard_nothing(results), do: Enum.reject(results, &(elem(&1, 0) == :nothing))
 
   defp compile_pattern(%Regex{} = pattern), do: {:ok, pattern}
   defp compile_pattern(pattern) when is_binary(pattern), do: Regex.compile(pattern, "u")
   defp compile_pattern(_), do: [:nothing]
+
+  defp value([]), do: []
+  defp value([{val, _path}]), do: [val]
+  defp value(vals) when is_list(vals), do: Enum.map(vals, &value/1)
+
+  defp to_positive(index, _len) when index >= 0, do: index
+  defp to_positive(index, len), do: len + index
 end

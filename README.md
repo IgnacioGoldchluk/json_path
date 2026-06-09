@@ -14,7 +14,7 @@ Add `json_path` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:json_path, "~> 0.3"}
+    {:json_path, "~> 0.4"}
   ]
 end
 ```
@@ -26,17 +26,17 @@ You can pass the JSONPath query expression as a string
 ```elixir
 iex(1)> root = [%{"a" => %{"b" => "c"}}, %{"b" => %{"a" => 1}}]
 iex(2)> query = "$..a"
-iex(3)> JSONPath.evaluate(root, query)
+iex(3)> JSONPath.values(root, query)
 {:ok, [%{"b" => "c"}, 1]}
 ```
 
 Or if you plan use the same query multiple times, you can build the expression once for better performance
 ```elixir
 iex(1)> {:ok, query} = JSONPath.build("$[1]")
-iex(2)> JSONPath.evaluate([], query)
+iex(2)> JSONPath.values([], query)
 {:ok, []}
 
-iex(3)> JSONPath.evaluate(["a", "b", "c"], query)
+iex(3)> JSONPath.values(["a", "b", "c"], query)
 {:ok, ["b"]}
 ```
 
@@ -50,7 +50,7 @@ iex(1)> JSONPath.build("$[?length(@.elems)]")
    message: "comparison operator expected"
  }}
 
-iex(2)> JSONPath.evaluate([%{"name" => "Alice"}], "$[?match(@.name)]")
+iex(2)> JSONPath.values([%{"name" => "Alice"}], "$[?match(@.name)]")
 {:error,
  %JSONPath.Error{
    type: :invalid_expression,
@@ -66,13 +66,13 @@ iex(1)> root = %{"people" => [
 ...>    %{"name" => "Bob", "age" => 30}
 ...>  ]}
 iex(2)> query = "$.people[?@.age > 25]"
-iex(3)> JSONPath.evaluate(root, query, :values)
+iex(3)> JSONPath.values(root, query)
 {:ok, [%{"name" => "Bob", "age" => 30}]}
 
-iex(4)> JSONPath.evaluate(root, query, :paths)
+iex(4)> JSONPath.paths(root, query)
 {:ok, ["$['people'][1]"]}
 
-iex(5)> JSONPath.evaluate(root, query, :values_and_paths)
+iex(5)> JSONPath.matches(root, query)
 {:ok, [{%{"name" => "Bob", "age" => 30}, "$['people'][1]"}]}
 ```
 

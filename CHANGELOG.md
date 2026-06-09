@@ -2,11 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## 0.4.0 [2026-06-09]
 `JSONPath.evaluate/3` has been deprecated. Use the following new functions instead based on the previous value of the `returning` argument:
 - `:values` -> `JSONPath.values/2`
 - `:paths` -> `JSONPath.paths/2`
-- `:values_and_paths` -> `JSONPath.matches/2`
+- `:values_and_paths` -> `JSONPath.value_paths/2`
 
 Same applies for `JSONPath.evaluate!/3`
 

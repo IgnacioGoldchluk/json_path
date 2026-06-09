@@ -45,7 +45,7 @@ defmodule JSONPath do
   """
   @spec evaluate(json(), String.t() | AST.t(), returning()) ::
           {:ok, list(json())} | {:error, JSONPath.Error.t()}
-  @deprecated "Use one of JSONPath.values/2, JSONPath.paths/2 or JSONPath.matches/2"
+  @deprecated "Use one of JSONPath.values/2, JSONPath.paths/2 or JSONPath.value_paths/2"
   def evaluate(document, query, returning \\ :values), do: run(document, query, returning)
 
   defp run(document, query, returning) when is_binary(query) do
@@ -138,26 +138,26 @@ defmodule JSONPath do
   result tuple containing two-element tuples of `{node_value, normalized_path}`
 
   ## Examples
-      iex> JSONPath.matches(["aba", "bbab", "bab"], "$[?match(@, 'b.b')]")
+      iex> JSONPath.value_paths(["aba", "bbab", "bab"], "$[?match(@, 'b.b')]")
       {:ok, [{"bab", "$[2]"}]}
   """
-  @spec matches(json(), String.t() | AST.t()) ::
+  @spec value_paths(json(), String.t() | AST.t()) ::
           {:ok, [{json(), String.t()}]} | {:error, JSONPath.Error.t()}
   @doc since: "0.4.0"
-  def matches(document, query), do: run(document, query, :values_and_paths)
+  def value_paths(document, query), do: run(document, query, :values_and_paths)
 
   @doc """
-  Same as `matches/2` but returns the list of two-element tuple `{node_value, normalized_path}`
+  Same as `value_paths/2` but returns the list of two-element tuple `{node_value, normalized_path}`
   or raises an error
 
   ## Examples
-      iex> JSONPath.matches!(["aba", "bbab", "bab"], "$[?match(@, 'b.b')]")
+      iex> JSONPath.value_paths!(["aba", "bbab", "bab"], "$[?match(@, 'b.b')]")
       [{"bab", "$[2]"}]
   """
   @doc since: "0.4.0"
-  @spec matches!(json(), String.t() | AST.t()) :: [{json(), String.t()}]
-  def matches!(document, query) do
-    case matches(document, query) do
+  @spec value_paths!(json(), String.t() | AST.t()) :: [{json(), String.t()}]
+  def value_paths!(document, query) do
+    case value_paths(document, query) do
       {:ok, results} -> results
       {:error, exc} -> raise exc
     end
@@ -166,7 +166,7 @@ defmodule JSONPath do
   @doc """
   Same as `evaluate/2` but raises in case of error
   """
-  @deprecated "Use one of JSONPath.values!/2, JSONPath.paths!/2 or JSONPath.matches!/2"
+  @deprecated "Use one of JSONPath.values!/2, JSONPath.paths!/2 or JSONPath.value_paths!/2"
   @spec evaluate!(json(), String.t() | AST.t(), returning()) :: list(json())
   def evaluate!(document, query, returning \\ :values)
 

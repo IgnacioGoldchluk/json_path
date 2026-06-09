@@ -72,7 +72,7 @@ iex(3)> JSONPath.values(root, query)
 iex(4)> JSONPath.paths(root, query)
 {:ok, ["$['people'][1]"]}
 
-iex(5)> JSONPath.matches(root, query)
+iex(5)> JSONPath.value_paths(root, query)
 {:ok, [{%{"name" => "Bob", "age" => 30}, "$['people'][1]"}]}
 ```
 

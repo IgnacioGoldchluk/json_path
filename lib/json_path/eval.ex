@@ -172,9 +172,13 @@ defmodule JSONPath.Eval do
   defp evaluate_selector(_root, _node, {:property, _}, path), do: [{:nothing, path}]
 
   defp evaluate_selector(_root, node, {:index, idx}, path) when is_list(node) do
-    case Enum.at(node, idx) do
-      nil -> [{:nothing, path}]
-      value -> [{value, [to_positive(idx, length(node)) | path]}]
+    len = length(node)
+    positive_idx = to_positive(idx, len)
+
+    if positive_idx >= 0 and positive_idx < len do
+      [{Enum.at(node, positive_idx), [positive_idx | path]}]
+    else
+      [{:nothing, path}]
     end
   end
 

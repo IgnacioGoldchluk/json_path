@@ -62,6 +62,14 @@ defmodule JSONPath.RegressionTest do
     assert {:ok, []} == JSONPath.values(root, query)
   end
 
+  test "index selector returns null array element" do
+    query = "$[1]"
+    root = ["first", nil, "third"]
+
+    assert {:ok, [nil]} == JSONPath.values(root, query)
+    assert {:ok, ["$[1]"]} == JSONPath.paths(root, query)
+  end
+
   test "notation with number on string" do
     query = "$[0]"
     root = "Hello"

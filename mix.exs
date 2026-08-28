@@ -2,7 +2,7 @@ defmodule JSONPath.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/IgnacioGoldchluk/json_path"
-  @version "0.4.0"
+  @version "0.4.1"
 
   def project do
     [

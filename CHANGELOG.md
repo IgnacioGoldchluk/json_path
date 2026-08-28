@@ -2,8 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
-- fix slice/index access incorrectly discarding null values
+## 0.4.1 [2026-08-28]
+- fix: slice/index access incorrectly discarding null values
 
 ## 0.4.0 [2026-06-09]
 `JSONPath.evaluate/3` has been deprecated. Use the following new functions instead based on the previous value of the `returning` argument:

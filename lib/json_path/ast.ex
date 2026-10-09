@@ -129,7 +129,7 @@ defmodule JSONPath.AST do
 
   defp precompile_regex({:function, f, [arg, {:literal, regex}]})
        when f in [:match, :search] and is_binary(regex) do
-    case Regex.compile(regex, "u") do
+    case Regex.compile("(*ANYCRLF)#{regex}", "u") do
       {:ok, pattern} ->
         {:function, f, [arg, {:literal, pattern}]}
 

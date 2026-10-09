@@ -145,8 +145,8 @@ defmodule JSONPath.ASTTest do
 
       assert is_struct(pattern1, Regex)
       assert is_struct(pattern2, Regex)
-      assert Regex.source(pattern1) == "foo"
-      assert Regex.source(pattern2) == "bar"
+      assert Regex.source(pattern1) == "(*ANYCRLF)foo"
+      assert Regex.source(pattern2) == "(*ANYCRLF)bar"
       assert :unicode in Regex.opts(pattern1)
       assert :unicode in Regex.opts(pattern2)
     end

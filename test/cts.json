@@ -5064,6 +5064,24 @@
       ]
     },
     {
+      "name": "index selector, null element",
+      "selector": "$[1]",
+      "document": [
+        "first",
+        null,
+        "third"
+      ],
+      "result": [
+        null
+      ],
+      "result_paths": [
+        "$[1]"
+      ],
+      "tags": [
+        "index"
+      ]
+    },
+    {
       "name": "name selector, double quotes",
       "selector": "$[\"a\"]",
       "document": {
@@ -7609,6 +7627,52 @@
       ]
     },
     {
+      "name": "slice selector, explicit start, omitted end and step",
+      "selector": "$[9::]",
+      "document": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "result": [
+        9
+      ],
+      "result_paths": [
+        "$[9]"
+      ],
+      "tags": [
+        "slice"
+      ]
+    },
+    {
+      "name": "slice selector, explicit start equal to length, omitted end and step",
+      "selector": "$[10::]",
+      "document": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "result": [],
+      "result_paths": [],
+      "tags": [
+        "slice"
+      ]
+    },
+    {
       "name": "functions, count, count function",
       "selector": "$[?count(@..*)>2]",
       "document": [
@@ -8020,7 +8084,8 @@
       ],
       "tags": [
         "function",
-        "length"
+        "length",
+        "value"
       ]
     },
     {
@@ -8047,7 +8112,8 @@
       ],
       "tags": [
         "function",
-        "length"
+        "length",
+        "value"
       ]
     },
     {
@@ -8290,11 +8356,9 @@
     },
     {
       "name": "functions, match, dot matcher on \\u2028",
-      "skip": true,
-      "skip_reason": "Codepoint is lost in document",
       "selector": "$[?match(@, '.')]",
       "document": [
-        "",
+        " ",
         "\r",
         "\n",
         true,
@@ -8302,7 +8366,7 @@
         {}
       ],
       "result": [
-        ""
+        " "
       ],
       "result_paths": [
         "$[0]"
@@ -8314,11 +8378,9 @@
     },
     {
       "name": "functions, match, dot matcher on \\u2029",
-      "skip": true,
-      "skip_reason": "Codepoint is lost in document",
       "selector": "$[?match(@, '.')]",
       "document": [
-        "",
+        " ",
         "\r",
         "\n",
         true,
@@ -8326,7 +8388,7 @@
         {}
       ],
       "result": [
-        ""
+        " "
       ],
       "result_paths": [
         "$[0]"
@@ -8387,7 +8449,8 @@
       ],
       "tags": [
         "function",
-        "match"
+        "match",
+        "value"
       ]
     },
     {
@@ -8432,17 +8495,15 @@
     },
     {
       "name": "functions, match, escaped backslash before dot",
-      "skip": true,
-      "skip_reason":"Additional '.'",
       "selector": "$[?match(@, 'a\\\\\\\\.c')]",
       "document": [
         "abc",
         "a.c",
         "axc",
-        "a\\c"
+        "a\\ c"
       ],
       "result": [
-        "a\\c"
+        "a\\ c"
       ],
       "result_paths": [
         "$[3]"
@@ -8454,16 +8515,14 @@
     },
     {
       "name": "functions, match, escaped left square bracket",
-      "skip": true,
-      "skip_reason":"Additional '.'",
       "selector": "$[?match(@, 'a\\\\[.c')]",
       "document": [
         "abc",
         "a.c",
-        "a[c"
+        "a[ c"
       ],
       "result": [
-        "a[c"
+        "a[ c"
       ],
       "result_paths": [
         "$[2]"
@@ -8479,7 +8538,7 @@
       "document": [
         "abc",
         "a.c",
-        "ac",
+        "a c",
         "a]c"
       ],
       "result": [
@@ -8807,12 +8866,10 @@
     },
     {
       "name": "functions, search, dot matcher on \\u2028",
-      "skip": true,
-      "skip_reason": "Codepoint is lost in document",
       "selector": "$[?search(@, '.')]",
       "document": [
-        "",
-        "\r\n",
+        " ",
+        "\r \n",
         "\r",
         "\n",
         true,
@@ -8820,8 +8877,8 @@
         {}
       ],
       "result": [
-        "",
-        "\r\n"
+        " ",
+        "\r \n"
       ],
       "result_paths": [
         "$[0]",
@@ -8834,12 +8891,10 @@
     },
     {
       "name": "functions, search, dot matcher on \\u2029",
-      "skip": true,
-      "skip_reason": "Codepoint is lost in document",
       "selector": "$[?search(@, '.')]",
       "document": [
-        "",
-        "\r\n",
+        " ",
+        "\r \n",
         "\r",
         "\n",
         true,
@@ -8847,8 +8902,8 @@
         {}
       ],
       "result": [
-        "",
-        "\r\n"
+        " ",
+        "\r \n"
       ],
       "result_paths": [
         "$[0]",
@@ -8915,7 +8970,8 @@
       ],
       "tags": [
         "function",
-        "search"
+        "search",
+        "value"
       ]
     },
     {
@@ -8960,17 +9016,15 @@
     },
     {
       "name": "functions, search, escaped backslash before dot",
-      "skip": true,
-      "skip_reason": "Additional '.'",
       "selector": "$[?search(@, 'a\\\\\\\\.c')]",
       "document": [
         "x abc y",
         "x a.c y",
         "x axc y",
-        "x a\\c y"
+        "x a\\ c y"
       ],
       "result": [
-        "x a\\c y"
+        "x a\\ c y"
       ],
       "result_paths": [
         "$[3]"
@@ -8982,16 +9036,14 @@
     },
     {
       "name": "functions, search, escaped left square bracket",
-      "skip": true,
-      "skip_reason": "Additional '.'",
       "selector": "$[?search(@, 'a\\\\[.c')]",
       "document": [
         "x abc y",
         "x a.c y",
-        "x a[c y"
+        "x a[ c y"
       ],
       "result": [
-        "x a[c y"
+        "x a[ c y"
       ],
       "result_paths": [
         "$[2]"
@@ -9007,7 +9059,7 @@
       "document": [
         "x abc y",
         "x a.c y",
-        "x ac y",
+        "x a c y",
         "x a]c y"
       ],
       "result": [
@@ -9873,8 +9925,8 @@
         "$[1]"
       ],
       "tags": [
+        "count",
         "function",
-        "search",
         "whitespace"
       ]
     },

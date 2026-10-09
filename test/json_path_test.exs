@@ -181,6 +181,13 @@ defmodule JSONPathTest do
 
       assert {:ok, root} == JSONPath.values(root, query)
     end
+
+    test "dot does not match carriage return" do
+      root = ["\r", "a"]
+      query = "$[?match(@, '.')]"
+
+      assert {:ok, ["a"]} == JSONPath.values(root, query)
+    end
   end
 
   describe "search function" do

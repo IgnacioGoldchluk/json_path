@@ -5646,6 +5646,33 @@ defmodule JSONPath.ComplianceTest do
     assert {:error, %JSONPath.Error{}} = JSONPath.values(root, selector)
   end
 
+  test "index selector, null element" do
+    testcase = %{
+      "document" => ["first", nil, "third"],
+      "name" => "index selector, null element",
+      "result" => [nil],
+      "result_paths" => ["$[1]"],
+      "selector" => "$[1]",
+      "tags" => ["index"]
+    }
+
+    selector = testcase["selector"]
+    root = testcase["document"]
+
+    %{"result" => result, "result_paths" => result_path} = testcase
+
+    # Only one possible result
+    {:ok, value} = JSONPath.values(root, selector)
+
+    assert value == result,
+           "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.paths(root, selector)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
+  end
+
   test "name selector, double quotes" do
     testcase = %{
       "document" => %{"a" => "A", "b" => "B"},
@@ -9536,6 +9563,60 @@ defmodule JSONPath.ComplianceTest do
     assert {:error, %JSONPath.Error{}} = JSONPath.values(root, selector)
   end
 
+  test "slice selector, explicit start, omitted end and step" do
+    testcase = %{
+      "document" => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "name" => "slice selector, explicit start, omitted end and step",
+      "result" => ~c"\t",
+      "result_paths" => ["$[9]"],
+      "selector" => "$[9::]",
+      "tags" => ["slice"]
+    }
+
+    selector = testcase["selector"]
+    root = testcase["document"]
+
+    %{"result" => result, "result_paths" => result_path} = testcase
+
+    # Only one possible result
+    {:ok, value} = JSONPath.values(root, selector)
+
+    assert value == result,
+           "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.paths(root, selector)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
+  end
+
+  test "slice selector, explicit start equal to length, omitted end and step" do
+    testcase = %{
+      "document" => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "name" => "slice selector, explicit start equal to length, omitted end and step",
+      "result" => [],
+      "result_paths" => [],
+      "selector" => "$[10::]",
+      "tags" => ["slice"]
+    }
+
+    selector = testcase["selector"]
+    root = testcase["document"]
+
+    %{"result" => result, "result_paths" => result_path} = testcase
+
+    # Only one possible result
+    {:ok, value} = JSONPath.values(root, selector)
+
+    assert value == result,
+           "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.paths(root, selector)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
+  end
+
   test "functions, count, count function" do
     testcase = %{
       "document" => [%{"a" => [1, 2, 3]}, %{"a" => [1], "d" => "f"}, %{"a" => 1, "d" => "f"}],
@@ -10008,7 +10089,7 @@ defmodule JSONPath.ComplianceTest do
       "result" => [%{"a" => "ab"}],
       "result_paths" => ["$['values'][0]"],
       "selector" => "$.values[?length(@.a)==length(value($..c))]",
-      "tags" => ["function", "length"]
+      "tags" => ["function", "length", "value"]
     }
 
     selector = testcase["selector"]
@@ -10035,7 +10116,7 @@ defmodule JSONPath.ComplianceTest do
       "result" => [%{"a" => "ab"}],
       "result_paths" => ["$[0]"],
       "selector" => "$[?length(value(@.a))>0]",
-      "tags" => ["function", "length"]
+      "tags" => ["function", "length", "value"]
     }
 
     selector = testcase["selector"]
@@ -10383,17 +10464,13 @@ defmodule JSONPath.ComplianceTest do
            "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
-  @tag :skip
-
   test "functions, match, dot matcher on \u2028" do
     testcase = %{
-      "document" => ["", "\r", "\n", true, [], %{}],
+      "document" => ["\u2028", "\r", "\n", true, [], %{}],
       "name" => "functions, match, dot matcher on \\u2028",
-      "result" => [""],
+      "result" => ["\u2028"],
       "result_paths" => ["$[0]"],
       "selector" => "$[?match(@, '.')]",
-      "skip" => true,
-      "skip_reason" => "Codepoint is lost in document",
       "tags" => ["function", "match"]
     }
 
@@ -10414,17 +10491,13 @@ defmodule JSONPath.ComplianceTest do
            "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
-  @tag :skip
-
   test "functions, match, dot matcher on \u2029" do
     testcase = %{
-      "document" => ["", "\r", "\n", true, [], %{}],
+      "document" => ["\u2029", "\r", "\n", true, [], %{}],
       "name" => "functions, match, dot matcher on \\u2029",
-      "result" => [""],
+      "result" => ["\u2029"],
       "result_paths" => ["$[0]"],
       "selector" => "$[?match(@, '.')]",
-      "skip" => true,
-      "skip_reason" => "Codepoint is lost in document",
       "tags" => ["function", "match"]
     }
 
@@ -10494,7 +10567,7 @@ defmodule JSONPath.ComplianceTest do
       "result" => [%{"a" => "ab"}],
       "result_paths" => ["$['values'][0]"],
       "selector" => "$.values[?match(@.a, value($..['regex']))]",
-      "tags" => ["function", "match"]
+      "tags" => ["function", "match", "value"]
     }
 
     selector = testcase["selector"]
@@ -10568,17 +10641,13 @@ defmodule JSONPath.ComplianceTest do
            "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
-  @tag :skip
-
   test "functions, match, escaped backslash before dot" do
     testcase = %{
-      "document" => ["abc", "a.c", "axc", "a\\c"],
+      "document" => ["abc", "a.c", "axc", "a\\\u2028c"],
       "name" => "functions, match, escaped backslash before dot",
-      "result" => ["a\\c"],
+      "result" => ["a\\\u2028c"],
       "result_paths" => ["$[3]"],
       "selector" => "$[?match(@, 'a\\\\\\\\.c')]",
-      "skip" => true,
-      "skip_reason" => "Additional '.'",
       "tags" => ["function", "match"]
     }
 
@@ -10599,17 +10668,13 @@ defmodule JSONPath.ComplianceTest do
            "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
-  @tag :skip
-
   test "functions, match, escaped left square bracket" do
     testcase = %{
-      "document" => ["abc", "a.c", "a[c"],
+      "document" => ["abc", "a.c", "a[\u2028c"],
       "name" => "functions, match, escaped left square bracket",
-      "result" => ["a[c"],
+      "result" => ["a[\u2028c"],
       "result_paths" => ["$[2]"],
       "selector" => "$[?match(@, 'a\\\\[.c')]",
-      "skip" => true,
-      "skip_reason" => "Additional '.'",
       "tags" => ["function", "match"]
     }
 
@@ -10632,7 +10697,7 @@ defmodule JSONPath.ComplianceTest do
 
   test "functions, match, escaped right square bracket" do
     testcase = %{
-      "document" => ["abc", "a.c", "ac", "a]c"],
+      "document" => ["abc", "a.c", "a\u2028c", "a]c"],
       "name" => "functions, match, escaped right square bracket",
       "result" => ["a.c", "a]c"],
       "result_paths" => ["$[1]", "$[3]"],
@@ -11066,17 +11131,13 @@ defmodule JSONPath.ComplianceTest do
            "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
-  @tag :skip
-
   test "functions, search, dot matcher on \u2028" do
     testcase = %{
-      "document" => ["", "\r\n", "\r", "\n", true, [], %{}],
+      "document" => ["\u2028", "\r\u2028\n", "\r", "\n", true, [], %{}],
       "name" => "functions, search, dot matcher on \\u2028",
-      "result" => ["", "\r\n"],
+      "result" => ["\u2028", "\r\u2028\n"],
       "result_paths" => ["$[0]", "$[1]"],
       "selector" => "$[?search(@, '.')]",
-      "skip" => true,
-      "skip_reason" => "Codepoint is lost in document",
       "tags" => ["function", "search"]
     }
 
@@ -11097,17 +11158,13 @@ defmodule JSONPath.ComplianceTest do
            "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
-  @tag :skip
-
   test "functions, search, dot matcher on \u2029" do
     testcase = %{
-      "document" => ["", "\r\n", "\r", "\n", true, [], %{}],
+      "document" => ["\u2029", "\r\u2029\n", "\r", "\n", true, [], %{}],
       "name" => "functions, search, dot matcher on \\u2029",
-      "result" => ["", "\r\n"],
+      "result" => ["\u2029", "\r\u2029\n"],
       "result_paths" => ["$[0]", "$[1]"],
       "selector" => "$[?search(@, '.')]",
-      "skip" => true,
-      "skip_reason" => "Codepoint is lost in document",
       "tags" => ["function", "search"]
     }
 
@@ -11180,7 +11237,7 @@ defmodule JSONPath.ComplianceTest do
       "result" => ["bab", "bba", "bbab"],
       "result_paths" => ["$['values'][2]", "$['values'][3]", "$['values'][4]"],
       "selector" => "$.values[?search(@, value($..['regex']))]",
-      "tags" => ["function", "search"]
+      "tags" => ["function", "search", "value"]
     }
 
     selector = testcase["selector"]
@@ -11254,17 +11311,13 @@ defmodule JSONPath.ComplianceTest do
            "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
-  @tag :skip
-
   test "functions, search, escaped backslash before dot" do
     testcase = %{
-      "document" => ["x abc y", "x a.c y", "x axc y", "x a\\c y"],
+      "document" => ["x abc y", "x a.c y", "x axc y", "x a\\\u2028c y"],
       "name" => "functions, search, escaped backslash before dot",
-      "result" => ["x a\\c y"],
+      "result" => ["x a\\\u2028c y"],
       "result_paths" => ["$[3]"],
       "selector" => "$[?search(@, 'a\\\\\\\\.c')]",
-      "skip" => true,
-      "skip_reason" => "Additional '.'",
       "tags" => ["function", "search"]
     }
 
@@ -11285,17 +11338,13 @@ defmodule JSONPath.ComplianceTest do
            "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
-  @tag :skip
-
   test "functions, search, escaped left square bracket" do
     testcase = %{
-      "document" => ["x abc y", "x a.c y", "x a[c y"],
+      "document" => ["x abc y", "x a.c y", "x a[\u2028c y"],
       "name" => "functions, search, escaped left square bracket",
-      "result" => ["x a[c y"],
+      "result" => ["x a[\u2028c y"],
       "result_paths" => ["$[2]"],
       "selector" => "$[?search(@, 'a\\\\[.c')]",
-      "skip" => true,
-      "skip_reason" => "Additional '.'",
       "tags" => ["function", "search"]
     }
 
@@ -11318,7 +11367,7 @@ defmodule JSONPath.ComplianceTest do
 
   test "functions, search, escaped right square bracket" do
     testcase = %{
-      "document" => ["x abc y", "x a.c y", "x ac y", "x a]c y"],
+      "document" => ["x abc y", "x a.c y", "x a\u2028c y", "x a]c y"],
       "name" => "functions, search, escaped right square bracket",
       "result" => ["x a.c y", "x a]c y"],
       "result_paths" => ["$[1]", "$[3]"],
@@ -12258,7 +12307,7 @@ defmodule JSONPath.ComplianceTest do
       "result" => [%{"a" => 1}, %{"b" => 2}],
       "result_paths" => ["$[0]", "$[1]"],
       "selector" => "$[?count(@.* )==1]",
-      "tags" => ["function", "search", "whitespace"]
+      "tags" => ["count", "function", "whitespace"]
     }
 
     selector = testcase["selector"]

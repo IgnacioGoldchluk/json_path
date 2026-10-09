@@ -227,7 +227,10 @@ defmodule JSONPath.Eval do
   defp discard_nothing(results), do: Enum.reject(results, &(elem(&1, 0) == :nothing))
 
   defp compile_pattern(%Regex{} = pattern), do: {:ok, pattern}
-  defp compile_pattern(pattern) when is_binary(pattern), do: Regex.compile(pattern, "u")
+
+  defp compile_pattern(pattern) when is_binary(pattern),
+    do: Regex.compile("(*ANYCRLF)#{pattern}", "u")
+
   defp compile_pattern(_), do: [:nothing]
 
   defp value([]), do: []

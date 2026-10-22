@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+- fix: malformed queries such as `$.first-name`, `$[*`, `$[?]` or `""` return `{:error, %JSONPath.Error{}}` instead of raising `FunctionClauseError`, `MatchError` or `CaseClauseError`
+
 ## 0.4.2 [2026-10-09]
 - fix: `.` incorrectly matching carriage return (`'\r'`) character
 

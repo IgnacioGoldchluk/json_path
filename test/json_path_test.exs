@@ -3,6 +3,41 @@ defmodule JSONPathTest do
 
   doctest JSONPath
 
+  describe "malformed queries" do
+    # Each of these used to raise (FunctionClauseError, MatchError or CaseClauseError)
+    # instead of returning an error.
+    test "return an invalid_expression error instead of raising" do
+      for {query, message, expression} <- [
+            {"", "must start with '$", nil},
+            {"$1", "unexpected token after the query", "1"},
+            {"$*", "unexpected token after the query", "*"},
+            {"$$", "unexpected token after the query", "$"},
+            {"$.a.length()", "unexpected token after the query", "("},
+            {"$[*", "unterminated selector, expected ']'", nil},
+            {"$[*:", "expected ',' or ']' after a selector", "::1"},
+            {"$[?", "unterminated filter expression", nil},
+            {"$[?]", "expected a literal, a query, a function or '(' in filter", "]"},
+            {"$[?(@.x==1]", "expected ')'", "]"},
+            {"$[?@.x==(1", "unterminated parenthesis, expected ')'", nil},
+            {"$[?match(@ == 1]", "expected ',' or ')' in function arguments", "]"},
+            {"$[?length(@.a > 1", "unterminated function call, expected ')'", nil}
+          ] do
+        error = %JSONPath.Error{
+          type: :invalid_expression,
+          message: message,
+          expression: expression
+        }
+
+        assert {:error, error} == JSONPath.build(query), "for query #{inspect(query)}"
+      end
+    end
+
+    test "a shorthand name with a character it may not contain is an error" do
+      assert {:error, %JSONPath.Error{type: :invalid_number}} = JSONPath.build("$.first-name")
+      assert {:ok, _} = JSONPath.build("$['first-name']")
+    end
+  end
+
   describe "filter comparison" do
     test "negative literal filter is invalid" do
       error = %JSONPath.Error{

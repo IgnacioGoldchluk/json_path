@@ -53,6 +53,10 @@ defmodule JSONPath.Tokenizer do
     {:error, %JSONPath.Error{type: :invalid_expression, message: "must start with '$"}}
   end
 
+  defp tokenize([], []) do
+    {:error, %JSONPath.Error{type: :invalid_expression, message: "must start with '$"}}
+  end
+
   defp tokenize([], acc), do: {:ok, Enum.reverse(acc)}
 
   # Ignore spaces
@@ -373,6 +377,9 @@ defmodule JSONPath.Tokenizer do
   defp selector?([_token | rest], stack, comma_seen?) do
     selector?(rest, stack, comma_seen?)
   end
+
+  # Nothing opened: a number right after the root, as in "$1"
+  defp selector?([], _stack, _comma_seen?), do: false
 
   defp extract_number(codepoints) do
     {number, rest} = Enum.split_while(codepoints, &(&1 in @number_codepoints))

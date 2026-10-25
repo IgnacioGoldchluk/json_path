@@ -190,9 +190,19 @@ defmodule JSONPath do
   defp to_result_path(path) when is_list(path) do
     "$" <>
       Enum.map_join(Enum.reverse(path), fn
-        val when is_integer(val) -> "[#{val}]"
-        val when is_binary(val) -> "['#{escape_codepoints(val)}']"
+        val when is_integer(val) ->
+          "[#{val}]"
+
+        val when is_binary(val) ->
+          result = "['#{escape_codepoints(val)}']"
+          if String.printable?(result), do: result, else: escape_control_characters(result)
       end)
+  end
+
+  defp escape_control_characters(result_path) do
+    String.replace(result_path, ~r/[\x00-\x1F\x7F]/, fn <<char>> ->
+      "\\u" <> (char |> Integer.to_string(16) |> String.pad_leading(4, "0") |> String.downcase())
+    end)
   end
 
   defp escape_codepoints(string) do

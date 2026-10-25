@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.4.4 [2026-10-25]
+- fix: format control characters when returning paths, such as `<<31>> -> \0x001f`
+
 ## 0.4.3 [2026-10-25]
 - fix: malformed queries such as `$.first-name`, `$[*`, `$[?]` or `""` return `{:error, %JSONPath.Error{}}` instead of raising `FunctionClauseError`, `MatchError` or `CaseClauseError`
 

@@ -107,6 +107,32 @@ defmodule JSONPath.ComplianceTest do
            "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
+  test "basic, name shorthand, supplementary plane character" do
+    testcase = %{
+      "document" => %{"b" => "B", "😀" => "A"},
+      "name" => "basic, name shorthand, supplementary plane character",
+      "result" => ["A"],
+      "result_paths" => ["$['😀']"],
+      "selector" => "$.😀"
+    }
+
+    selector = testcase["selector"]
+    root = testcase["document"]
+
+    %{"result" => result, "result_paths" => result_path} = testcase
+
+    # Only one possible result
+    {:ok, value} = JSONPath.values(root, selector)
+
+    assert value == result,
+           "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.paths(root, selector)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
+  end
+
   test "basic, name shorthand, underscore" do
     testcase = %{
       "document" => %{"_" => "A", "_foo" => "B"},
@@ -151,6 +177,19 @@ defmodule JSONPath.ComplianceTest do
       "invalid_selector" => true,
       "name" => "basic, name shorthand, number",
       "selector" => "$.1"
+    }
+
+    selector = testcase["selector"]
+    root = testcase["document"]
+
+    assert {:error, %JSONPath.Error{}} = JSONPath.values(root, selector)
+  end
+
+  test "basic, name shorthand, hyphen" do
+    testcase = %{
+      "invalid_selector" => true,
+      "name" => "basic, name shorthand, hyphen",
+      "selector" => "$.a-b"
     }
 
     selector = testcase["selector"]
@@ -389,6 +428,19 @@ defmodule JSONPath.ComplianceTest do
       "invalid_selector" => true,
       "name" => "basic, selector, trailing comma",
       "selector" => "$[0,]"
+    }
+
+    selector = testcase["selector"]
+    root = testcase["document"]
+
+    assert {:error, %JSONPath.Error{}} = JSONPath.values(root, selector)
+  end
+
+  test "basic, selector, trailing comma, space" do
+    testcase = %{
+      "invalid_selector" => true,
+      "name" => "basic, selector, trailing comma, space",
+      "selector" => "$[0, ]"
     }
 
     selector = testcase["selector"]
@@ -2160,6 +2212,32 @@ defmodule JSONPath.ComplianceTest do
            "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
+  test "filter, less than or equal to true, number" do
+    testcase = %{
+      "document" => [%{"a" => 0, "d" => "e"}, %{"a" => 1, "d" => "f"}],
+      "name" => "filter, less than or equal to true, number",
+      "result" => [],
+      "result_paths" => [],
+      "selector" => "$[?@.a<=true]"
+    }
+
+    selector = testcase["selector"]
+    root = testcase["document"]
+
+    %{"result" => result, "result_paths" => result_path} = testcase
+
+    # Only one possible result
+    {:ok, value} = JSONPath.values(root, selector)
+
+    assert value == result,
+           "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.paths(root, selector)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
+  end
+
   test "filter, less than or equal to false" do
     testcase = %{
       "document" => [%{"a" => false, "d" => "e"}, %{"a" => "c", "d" => "f"}],
@@ -2333,6 +2411,32 @@ defmodule JSONPath.ComplianceTest do
     testcase = %{
       "document" => [%{"a" => false, "d" => "e"}, %{"a" => "c", "d" => "f"}],
       "name" => "filter, greater than false",
+      "result" => [],
+      "result_paths" => [],
+      "selector" => "$[?@.a>false]"
+    }
+
+    selector = testcase["selector"]
+    root = testcase["document"]
+
+    %{"result" => result, "result_paths" => result_path} = testcase
+
+    # Only one possible result
+    {:ok, value} = JSONPath.values(root, selector)
+
+    assert value == result,
+           "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.paths(root, selector)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
+  end
+
+  test "filter, greater than false, number" do
+    testcase = %{
+      "document" => [%{"a" => 0, "d" => "e"}, %{"a" => 1, "d" => "f"}],
+      "name" => "filter, greater than false, number",
       "result" => [],
       "result_paths" => [],
       "selector" => "$[?@.a>false]"
@@ -6594,6 +6698,60 @@ defmodule JSONPath.ComplianceTest do
            "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
   end
 
+  test "name selector, double quotes, escaped é, lower case hex e" do
+    testcase = %{
+      "document" => %{"é" => "A"},
+      "name" => "name selector, double quotes, escaped é, lower case hex e",
+      "result" => ["A"],
+      "result_paths" => ["$['é']"],
+      "selector" => "$[\"\\u00e9\"]",
+      "tags" => ["unicode"]
+    }
+
+    selector = testcase["selector"]
+    root = testcase["document"]
+
+    %{"result" => result, "result_paths" => result_path} = testcase
+
+    # Only one possible result
+    {:ok, value} = JSONPath.values(root, selector)
+
+    assert value == result,
+           "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.paths(root, selector)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
+  end
+
+  test "name selector, double quotes, escaped control character" do
+    testcase = %{
+      "document" => %{<<31>> => "A"},
+      "name" => "name selector, double quotes, escaped control character",
+      "result" => ["A"],
+      "result_paths" => ["$['\\u001f']"],
+      "selector" => "$[\"\\u001f\"]",
+      "tags" => ["unicode"]
+    }
+
+    selector = testcase["selector"]
+    root = testcase["document"]
+
+    %{"result" => result, "result_paths" => result_path} = testcase
+
+    # Only one possible result
+    {:ok, value} = JSONPath.values(root, selector)
+
+    assert value == result,
+           "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.paths(root, selector)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
+  end
+
   test "name selector, double quotes, surrogate pair 𝄞" do
     testcase = %{
       "document" => %{"𝄞" => "A"},
@@ -7853,6 +8011,60 @@ defmodule JSONPath.ComplianceTest do
       "result" => ["A"],
       "result_paths" => ["$['☺']"],
       "selector" => "$['\\u263a']",
+      "tags" => ["unicode"]
+    }
+
+    selector = testcase["selector"]
+    root = testcase["document"]
+
+    %{"result" => result, "result_paths" => result_path} = testcase
+
+    # Only one possible result
+    {:ok, value} = JSONPath.values(root, selector)
+
+    assert value == result,
+           "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.paths(root, selector)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
+  end
+
+  test "name selector, single quotes, escaped é, lower case hex e" do
+    testcase = %{
+      "document" => %{"é" => "A"},
+      "name" => "name selector, single quotes, escaped é, lower case hex e",
+      "result" => ["A"],
+      "result_paths" => ["$['é']"],
+      "selector" => "$['\\u00e9']",
+      "tags" => ["unicode"]
+    }
+
+    selector = testcase["selector"]
+    root = testcase["document"]
+
+    %{"result" => result, "result_paths" => result_path} = testcase
+
+    # Only one possible result
+    {:ok, value} = JSONPath.values(root, selector)
+
+    assert value == result,
+           "for query #{selector} and root #{inspect(root)}, expected: #{inspect(result)}, got: #{inspect(value)}"
+
+    {:ok, paths} = JSONPath.paths(root, selector)
+
+    assert paths == result_path,
+           "for query #{selector} and root #{inspect(root)}, expected paths: #{inspect(result_path)}, got: #{inspect(paths)}"
+  end
+
+  test "name selector, single quotes, escaped control character" do
+    testcase = %{
+      "document" => %{<<31>> => "A"},
+      "name" => "name selector, single quotes, escaped control character",
+      "result" => ["A"],
+      "result_paths" => ["$['\\u001f']"],
+      "selector" => "$['\\u001f']",
       "tags" => ["unicode"]
     }
 

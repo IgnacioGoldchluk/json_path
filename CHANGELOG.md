@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## 0.4.3 [2026-10-25]
 - fix: malformed queries such as `$.first-name`, `$[*`, `$[?]` or `""` return `{:error, %JSONPath.Error{}}` instead of raising `FunctionClauseError`, `MatchError` or `CaseClauseError`
 
 ## 0.4.2 [2026-10-09]

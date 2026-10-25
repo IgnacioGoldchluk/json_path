@@ -7,8 +7,10 @@ defmodule JSONPath.AST do
 
   @comparison_operators [:lt, :lte, :eq, :gte, :gt, :neq]
   def parse(tokens) do
-    {ast, []} = parse_path(tokens)
-    validate(ast)
+    case parse_path(tokens) do
+      {ast, []} -> validate(ast)
+      {_ast, [token | _]} -> syntax_error("unexpected token after the query", token)
+    end
   catch
     {:error, _} = error -> error
   end
@@ -37,11 +39,18 @@ defmodule JSONPath.AST do
   defp parse_selectors(tokens), do: parse_selectors(tokens, [])
 
   defp parse_selectors(tokens, selectors) do
-    {selector, [separator | remaining_tokens]} = parse_selector(tokens)
+    case parse_selector(tokens) do
+      {selector, [:comma | remaining_tokens]} ->
+        parse_selectors(remaining_tokens, [selector | selectors])
 
-    case separator do
-      :comma -> parse_selectors(remaining_tokens, [selector | selectors])
-      :rbracket -> {Enum.reverse([selector | selectors]), remaining_tokens}
+      {selector, [:rbracket | remaining_tokens]} ->
+        {Enum.reverse([selector | selectors]), remaining_tokens}
+
+      {_selector, [token | _]} ->
+        syntax_error("expected ',' or ']' after a selector", token)
+
+      {_selector, []} ->
+        syntax_error("unterminated selector, expected ']'")
     end
   end
 
@@ -109,9 +118,18 @@ defmodule JSONPath.AST do
   end
 
   defp parse_primary([:lparen | tokens]) do
-    {expr, [:rparen | remaining_tokens]} = parse_expression(tokens)
-    {expr, remaining_tokens}
+    case parse_expression(tokens) do
+      {expr, [:rparen | remaining_tokens]} -> {expr, remaining_tokens}
+      {_expr, [token | _]} -> syntax_error("expected ')'", token)
+      {_expr, []} -> syntax_error("unterminated parenthesis, expected ')'")
+    end
   end
+
+  defp parse_primary([token | _]) do
+    syntax_error("expected a literal, a query, a function or '(' in filter", token)
+  end
+
+  defp parse_primary([]), do: syntax_error("unterminated filter expression")
 
   # This might be unreachable
   defp parse_function_arguments([:rparen | remaining]), do: {[], remaining}
@@ -119,12 +137,34 @@ defmodule JSONPath.AST do
   defp parse_function_arguments(tokens), do: parse_function_arguments(tokens, [])
 
   defp parse_function_arguments(tokens, arguments) do
-    {argument, [separator | remaining_tokens]} = parse_expression(tokens)
+    case parse_expression(tokens) do
+      {argument, [:comma | remaining_tokens]} ->
+        parse_function_arguments(remaining_tokens, [argument | arguments])
 
-    case separator do
-      :comma -> parse_function_arguments(remaining_tokens, [argument | arguments])
-      :rparen -> {Enum.reverse([argument | arguments]), remaining_tokens}
+      {argument, [:rparen | remaining_tokens]} ->
+        {Enum.reverse([argument | arguments]), remaining_tokens}
+
+      {_argument, [token | _]} ->
+        syntax_error("expected ',' or ')' in function arguments", token)
+
+      {_argument, []} ->
+        syntax_error("unterminated function call, expected ')'")
     end
+  end
+
+  defp syntax_error(message) do
+    throw({:error, %JSONPath.Error{type: :invalid_expression, message: message}})
+  end
+
+  defp syntax_error(message, token) do
+    throw(
+      {:error,
+       %JSONPath.Error{
+         type: :invalid_expression,
+         expression: token_to_string(token),
+         message: message
+       }}
+    )
   end
 
   defp precompile_regex({:function, f, [arg, {:literal, regex}]})
@@ -407,6 +447,23 @@ defmodule JSONPath.AST do
 
   # Invalid expression
   defp ast_to_string(node) when is_list(node), do: ""
+
+  defp token_to_string(:root), do: "$"
+  defp token_to_string(:current_node), do: "@"
+  defp token_to_string(:wildcard), do: "*"
+  defp token_to_string(:filter), do: "?"
+  defp token_to_string(:descendant_segment), do: ".."
+  defp token_to_string(:lbracket), do: "["
+  defp token_to_string(:rbracket), do: "]"
+  defp token_to_string(:lparen), do: "("
+  defp token_to_string(:rparen), do: ")"
+  defp token_to_string(:comma), do: ","
+  defp token_to_string(:and), do: "&&"
+  defp token_to_string(:or), do: "||"
+  defp token_to_string(:not), do: "!"
+  defp token_to_string({:function, name}), do: "#{name}("
+  defp token_to_string(op) when op in @comparison_operators, do: comp(op)
+  defp token_to_string(token), do: ast_to_string(token)
 
   defp comp(:lt), do: "<"
   defp comp(:lte), do: "<="
